@@ -6,10 +6,18 @@ use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 
-// روت اصلی به داشبورد ادمین هدایت شود
+// --- مسیرهای عمومی سایت ---
 Route::get('/', function () {
-    return redirect('/admin');
+    return view('home'); // نام فایلی که کلاد ساخت
+})->name('home');
+
+Route::get('/register', function () {
+    return redirect('/register'); // موقت، تا صفحه اصلی ساخته شود
 });
+
+Route::get('/register', function () {
+    return view('auth.register');
+})->name('register');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     
