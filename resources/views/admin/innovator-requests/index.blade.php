@@ -39,7 +39,10 @@
                     @forelse ($requests as $request)
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-4 text-slate-800">
-                                <div class="font-medium">{{ $request->user->name }} {{ $request->user->family }}</div>
+                                <a href="{{ route('admin.innovator-requests.show', $request->id) }}"
+                                   class="font-medium hover:text-indigo-600 hover:underline transition-colors">
+                                    {{ $request->user->name }} {{ $request->user->family }}
+                                </a>
                                 <div class="text-xs text-slate-500" dir="ltr">{{ $request->user->national_code }}</div>
                             </td>
                             <td class="px-6 py-4 text-slate-800">
@@ -59,23 +62,34 @@
                             </td>
                             <td class="px-6 py-4 text-left">
                                 @if ($request->status === 'pending')
-                                    <form action="{{ route('admin.innovator-requests.approve', $request->id) }}" method="POST" class="inline-block ml-2">
-                                        @csrf
-                                        <button type="submit"
-                                                onclick="return confirm('آیا از تأیید این درخواست مطمئن هستید؟')"
-                                                class="text-emerald-600 hover:text-emerald-800 hover:underline text-sm font-medium">
-                                            تأیید
+                                    <div class="flex items-center gap-2">
+                                        <form action="{{ route('admin.innovator-requests.approve', $request->id) }}" method="POST" class="inline-block">
+                                            @csrf
+                                            <button type="submit"
+                                                    onclick="return confirm('آیا از تأیید این درخواست مطمئن هستید؟')"
+                                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700 transition-colors">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                    <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
+                                                </svg>
+                                                تأیید
+                                            </button>
+                                        </form>
+                                        <button type="button"
+                                                onclick="openRejectModal({{ $request->id }})"
+                                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
+                                            </svg>
+                                            رد
                                         </button>
-                                    </form>
-                                    <button type="button"
-                                            onclick="openRejectModal({{ $request->id }})"
-                                            class="text-red-600 hover:text-red-800 hover:underline text-sm font-medium">
-                                        رد
-                                    </button>
+                                    </div>
                                 @elseif ($request->status === 'rejected')
                                     <button type="button"
                                             onclick="showRejectionReason('{{ $request->rejection_reason }}')"
-                                            class="text-red-600 hover:text-red-800 hover:underline text-sm font-medium">
+                                            class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
+                                        </svg>
                                         دلیل رد
                                     </button>
                                 @endif

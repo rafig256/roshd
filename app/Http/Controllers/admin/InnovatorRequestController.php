@@ -18,6 +18,12 @@ class InnovatorRequestController extends Controller
         return view('admin.innovator-requests.index', compact('requests'));
     }
 
+    public function show(InnovatorRequest $innovatorRequest)
+    {
+        $innovatorRequest->load(['user', 'activityCategory']);
+        return view('admin.innovator-requests.show', compact('innovatorRequest'));
+    }
+
     public function approve(InnovatorRequest $innovatorRequest)
     {
         $innovatorRequest->update(['status' => 'approved']);

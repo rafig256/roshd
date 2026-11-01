@@ -74,6 +74,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // درخواست‌های فناوری (ادمین)
         Route::get('/innovator-requests', [AdminInnovatorRequestController::class, 'index'])->name('innovator-requests.index');
+        Route::get('/innovator-requests/{innovatorRequest}', [AdminInnovatorRequestController::class, 'show'])->name('innovator-requests.show');
         Route::post('/innovator-requests/{innovatorRequest}/approve', [AdminInnovatorRequestController::class, 'approve'])->name('innovator-requests.approve');
         Route::post('/innovator-requests/{innovatorRequest}/reject', [AdminInnovatorRequestController::class, 'reject'])->name('innovator-requests.reject');
     });
