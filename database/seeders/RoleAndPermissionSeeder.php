@@ -31,22 +31,34 @@ class RoleAndPermissionSeeder extends Seeder
             Permission::firstOrCreate(['name' => $permission]);
         }
 
-        $superAdmin = Role::firstOrCreate(['name' => 'super_admin']);
+        // --- نقش‌ها همراه با نام فارسی (label) ---
+
+        $superAdmin = Role::updateOrCreate(
+            ['name' => 'super_admin'],
+            ['label' => 'مدیر کل']
+        );
         $superAdmin->syncPermissions(Permission::all());
 
-        $siteAdmin = Role::firstOrCreate(['name' => 'site_admin']);
-        // استفاده از فرم استاندارد کوئری
+        $siteAdmin = Role::updateOrCreate(
+            ['name' => 'site_admin'],
+            ['label' => 'مدیر سایت']
+        );
         $siteAdmin->syncPermissions(Permission::where('name', 'not like', 'roles.%')->get());
 
-        $prOfficer = Role::firstOrCreate(['name' => 'pr_officer']);
-
+        $prOfficer = Role::updateOrCreate(
+            ['name' => 'pr_officer'],
+            ['label' => 'مدیر روابط عمومی']
+        );
         $prOfficer->syncPermissions(
             Permission::where('name', 'like', 'news.%')
                 ->orWhere('name', 'like', 'events.%')
                 ->get()
         );
 
-        $expert = Role::firstOrCreate(['name' => 'expert']);
+        $expert = Role::updateOrCreate(
+            ['name' => 'expert'],
+            ['label' => 'کارشناس مرکز رشد']
+        );
         $expert->syncPermissions([
             'users.view',
             'innovators.requests.view', 'innovators.requests.approve',
@@ -57,6 +69,9 @@ class RoleAndPermissionSeeder extends Seeder
             'events.view', 'events.create', 'events.edit', 'events.delete', 'events.publish', 'events.categories.manage', 'events.speakers.manage', 'events.registrations.view',
         ]);
 
-        Role::firstOrCreate(['name' => 'innovator']);
+        Role::updateOrCreate(
+            ['name' => 'innovator'],
+            ['label' => 'فناور']
+        );
     }
 }
