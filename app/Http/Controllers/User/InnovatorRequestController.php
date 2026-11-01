@@ -38,15 +38,18 @@ class InnovatorRequestController extends Controller
         }
 
         // Convert Jalali date to Gregorian
-        $entryDate = null;
+               $entryDate = null;
         if (!empty($validated['entry_date'])) {
             $parts = explode('/', $validated['entry_date']);
             if (count($parts) === 3) {
-                $entryDate = CalendarUtils::toGregorian(
+                // این متد یک آرایه برمی‌گرداند، مثلاً [2024, 10, 31]
+                $gregorianArray = CalendarUtils::toGregorian(
                     (int)$parts[0],
                     (int)$parts[1],
                     (int)$parts[2]
                 );
+                
+                $entryDate = implode('-', $gregorianArray); 
             }
         }
 
@@ -61,6 +64,6 @@ class InnovatorRequestController extends Controller
         ]);
 
         return redirect()->route('user.dashboard')
-            ->with('success', 'درخواست فناوری شما با موفقیت ثبت شد و در انتظار بررسی است.');
+            ->with('success', 'درخواست فناوری شما با موفقیت ثبت شد و در انتظار بررسی قرار گرفت.');
     }
 }

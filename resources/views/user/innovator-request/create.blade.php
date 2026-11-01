@@ -73,17 +73,27 @@
                         @enderror
                     </div>
 
-                    {{-- Entry date --}}
+                    {{-- Entry date (Persian datepicker) --}}
                     <div>
-                        <label for="entry_date" class="block mb-2 text-sm font-medium text-slate-700">
+                        <label class="block mb-2 text-sm font-medium text-slate-700">
                             تاریخ ورود به پارک
                         </label>
-                        <input type="text" id="entry_date" name="entry_date" value="{{ old('entry_date') }}"
-                               dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="1402/01/01"
-                               class="w-full px-4 py-3 text-sm text-left rounded-xl border bg-slate-50 placeholder:text-right placeholder:text-slate-400
-                                      focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition
-                                      @error('entry_date') border-red-400 @else border-slate-300 @enderror">
-                        <p class="mt-1.5 text-xs text-slate-400">تاریخ شمسی را به‌صورت سال/ماه/روز وارد کنید.</p>
+
+                        {{-- مقدار واقعی که همراه فرم ارسال می‌شود (YYYY/MM/DD با ارقام لاتین) --}}
+                        <input type="hidden" id="entry_date" name="entry_date" value="{{ old('entry_date') }}">
+
+                        <div class="datepicker-wrap rounded-xl border bg-slate-50 transition
+                                    focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500
+                                    @error('entry_date') border-red-400 @else border-slate-300 @enderror">
+                            <persian-datepicker-element
+                                id="entry_date_picker"
+                                placeholder="1402/01/01"
+                                format="YYYY/MM/DD"
+                                rtl
+                                class="block w-full"></persian-datepicker-element>
+                        </div>
+
+                        <p class="mt-1.5 text-xs text-slate-400">تاریخ را از تقویم انتخاب کنید.</p>
                         @error('entry_date')
                             <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
                         @enderror
@@ -162,9 +172,50 @@
         </div>
     </div>
 </section>
+
 @endsection
 
 @push('scripts')
+<script type="module" src="https://cdn.jsdelivr.net/npm/persian-datepicker-element@1.1.17/dist/persian-datepicker-element.min.js"></script>
+
+<style>
+    /* کامپوننت تمام عرض ستون را بگیرد */
+    persian-datepicker-element { display: block; width: 100%; font-family: 'Vazirmatn', Tahoma, sans-serif; }
+    /* هماهنگی با ظاهر بقیه فیلدها (فقط روی المان بیرونی اثر دارد، نه داخل Shadow DOM) */
+    .datepicker-wrap { padding: 0.25rem 0.5rem; }
+</style>
+
+<script>
+    (function () {
+        const picker = document.getElementById('entry_date_picker');
+        const hidden = document.getElementById('entry_date');
+        if (!picker || !hidden) return;
+
+        const pad = (n) => String(n).padStart(2, '0');
+
+        // تبدیل ارقام فارسی/عربی به لاتین
+        const toLatin = (s) => String(s)
+            .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+            .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+
+        // هر بار کاربر تاریخی انتخاب کرد، فیلد مخفی به‌روز شود
+        picker.addEventListener('change', (e) => {
+            const j = e.detail && e.detail.jalali;
+            hidden.value = Array.isArray(j) && j.length === 3
+                ? `${j[0]}/${pad(j[1])}/${pad(j[2])}`
+                : '';
+        });
+
+        // بازگرداندن old('entry_date') بعد از خطای اعتبارسنجی
+        const initial = toLatin(hidden.value || '').trim();
+        const m = initial.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+        if (m) {
+            customElements.whenDefined('persian-datepicker-element').then(() => {
+                picker.setValue(+m[1], +m[2], +m[3]);
+            });
+        }
+    })();
+</script>
 <script>
     // Show selected file name in the upload box
     document.getElementById('resume_file_path')?.addEventListener('change', function () {
