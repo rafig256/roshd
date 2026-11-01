@@ -103,7 +103,7 @@
                                 <p class="text-xs font-medium text-slate-500">خوش آمدید</p>
                                 <p class="text-sm font-semibold text-slate-800 truncate">{{ auth()->user()->name }} {{ auth()->user()->family }}</p>
                             </div>
-                            <a href="{{ route('dashboard') }}"
+                            <a href="{{ route('user.dashboard') }}"
                                class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -111,7 +111,7 @@
                                 </svg>
                                 پنل کاربری من
                             </a>
-                            <form method="POST" action="{{ route('logout') }}" class="block">
+                            <form method="POST" action="{{ route('user.logout') }}" class="block">
                                 @csrf
                                 <button type="submit"
                                         class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
@@ -161,7 +161,7 @@
             @else
                 <div class="border-t border-slate-200 pt-3">
                     <p class="text-xs font-medium text-slate-500 mb-2">خوش آمدید، {{ auth()->user()->name }}</p>
-                    <a href="{{ route('dashboard') }}"
+                    <a href="{{ route('user.dashboard') }}"
                        class="flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-indigo-600 rounded-lg transition-colors block">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -169,7 +169,7 @@
                         </svg>
                         پنل کاربری من
                     </a>
-                    <form method="POST" action="{{ route('logout') }}">
+                    <form method="POST" action="{{ route('user.logout') }}">
                         @csrf
                         <button type="submit"
                                 class="flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors">

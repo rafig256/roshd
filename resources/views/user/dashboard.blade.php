@@ -24,7 +24,7 @@
             </div>
 
             {{-- Logout (header) --}}
-            <form method="POST" action="{{ route('logout') }}">
+            <form method="POST" action="{{ route('user.logout') }}">
                 @csrf
                 <button type="submit"
                         class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-red-600 bg-white border border-red-200 rounded-xl
@@ -66,7 +66,7 @@
                     اگر هنوز به‌عنوان فناور در مرکز نوآوری عضو نیستید، می‌توانید درخواست خود را ثبت کنید تا پس از بررسی،
                     به امکانات و خدمات ویژه‌ی فناوران دسترسی پیدا کنید.
                 </p>
-                <a href="#"
+                <a href="{{ route('user.innovator-request.create') }}"
                    class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
                           bg-gradient-to-l from-indigo-600 to-fuchsia-500 shadow-md shadow-indigo-500/30
                           hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
@@ -139,7 +139,7 @@
                 <p class="mt-2 text-sm leading-7 text-red-700/80">
                     برای حفظ امنیت حساب‌تان، پس از پایان کار از پنل خارج شوید؛ مخصوصاً اگر از دستگاه عمومی استفاده می‌کنید.
                 </p>
-                <form method="POST" action="{{ route('logout') }}" class="mt-6">
+                <form method="POST" action="{{ route('user.logout') }}" class="mt-6">
                     @csrf
                     <button type="submit"
                             class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white bg-red-600 rounded-xl

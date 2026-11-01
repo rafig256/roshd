@@ -1,0 +1,175 @@
+@extends('layouts.public')
+
+@section('title', 'درخواست فناوری')
+
+@section('content')
+<section class="relative overflow-hidden bg-gradient-to-b from-indigo-50 via-white to-white min-h-[calc(100vh-5rem)]">
+
+    {{-- Decorative blobs --}}
+    <div class="pointer-events-none absolute -top-24 -right-24 w-96 h-96 rounded-full bg-indigo-300/30 blur-3xl"></div>
+    <div class="pointer-events-none absolute top-48 -left-24 w-80 h-80 rounded-full bg-fuchsia-300/20 blur-3xl"></div>
+
+    <div class="relative max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+
+        {{-- Breadcrumb / back --}}
+        <a href="{{ route('user.dashboard') }}"
+           class="inline-flex items-center gap-1.5 mb-6 text-sm font-medium text-slate-500 hover:text-indigo-600 transition-colors">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M9 5l7 7-7 7"/>
+            </svg>
+            بازگشت به پنل کاربری
+        </a>
+
+        {{-- Page header --}}
+        <div class="flex items-start gap-4">
+            <div class="w-14 h-14 shrink-0 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8"
+                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.6.5 1 1.2 1 2V16h5v-.1c0-.8.4-1.5 1-2A6 6 0 0012 3z"/>
+                </svg>
+            </div>
+            <div>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900">درخواست فناوری</h1>
+                <p class="mt-2 text-sm sm:text-base leading-8 text-slate-600">
+                    با تکمیل این فرم، درخواست خود را برای عضویت به‌عنوان فناور در مرکز نوآوری شهری ثبت می‌کنید.
+                    پس از بررسی توسط کارشناسان، نتیجه از طریق پنل کاربری به شما اعلام می‌شود.
+                </p>
+            </div>
+        </div>
+
+        {{-- General error summary --}}
+        @if ($errors->any())
+            <div class="mt-8 px-4 py-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-xl">
+                لطفاً خطاهای مشخص‌شده در فرم را برطرف کنید و دوباره تلاش کنید.
+            </div>
+        @endif
+
+        {{-- Form card --}}
+        <div class="mt-8 bg-white rounded-2xl border border-slate-200 shadow-xl shadow-slate-900/5">
+            <form method="POST" action="{{ route('user.innovator-request.store') }}" enctype="multipart/form-data" class="p-6 sm:p-8 space-y-6" novalidate>
+                @csrf
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                    {{-- Activity category --}}
+                    <div>
+                        <label for="activity_category_id" class="block mb-2 text-sm font-medium text-slate-700">
+                            دسته فعالیت <span class="text-red-500">*</span>
+                        </label>
+                        <select id="activity_category_id" name="activity_category_id"
+                                class="w-full px-4 py-3 text-sm rounded-xl border bg-slate-50
+                                       focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition
+                                       @error('activity_category_id') border-red-400 @else border-slate-300 @enderror">
+                            <option value="">یک دسته را انتخاب کنید</option>
+                            @foreach ($categories as $category)
+                                <option value="{{ $category->id }}" @selected(old('activity_category_id') == $category->id)>
+                                    {{ $category->name ?? $category->title }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('activity_category_id')
+                            <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    {{-- Entry date --}}
+                    <div>
+                        <label for="entry_date" class="block mb-2 text-sm font-medium text-slate-700">
+                            تاریخ ورود به پارک
+                        </label>
+                        <input type="text" id="entry_date" name="entry_date" value="{{ old('entry_date') }}"
+                               dir="ltr" inputmode="numeric" maxlength="10" autocomplete="off" placeholder="1402/01/01"
+                               class="w-full px-4 py-3 text-sm text-left rounded-xl border bg-slate-50 placeholder:text-right placeholder:text-slate-400
+                                      focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition
+                                      @error('entry_date') border-red-400 @else border-slate-300 @enderror">
+                        <p class="mt-1.5 text-xs text-slate-400">تاریخ شمسی را به‌صورت سال/ماه/روز وارد کنید.</p>
+                        @error('entry_date')
+                            <p class="mt-1 text-xs text-red-600">{{ $message }}</p>
+                        @enderror
+                    </div>
+                </div>
+
+                {{-- Bio --}}
+                <div>
+                    <label for="bio" class="block mb-2 text-sm font-medium text-slate-700">
+                        معرفی خود <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="bio" name="bio" rows="5"
+                              placeholder="درباره‌ی تحصیلات، سوابق کاری و تخصص‌های خود بنویسید..."
+                              class="w-full px-4 py-3 text-sm leading-7 rounded-xl border bg-slate-50 placeholder:text-slate-400 resize-y
+                                     focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition
+                                     @error('bio') border-red-400 @else border-slate-300 @enderror">{{ old('bio') }}</textarea>
+                    @error('bio')
+                        <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Motivation --}}
+                <div>
+                    <label for="motivation" class="block mb-2 text-sm font-medium text-slate-700">
+                        انگیزه از فناور شدن <span class="text-red-500">*</span>
+                    </label>
+                    <textarea id="motivation" name="motivation" rows="5"
+                              placeholder="چرا می‌خواهید در مرکز نوآوری شهری فعالیت کنید و انتظار شما از این همکاری چیست؟"
+                              class="w-full px-4 py-3 text-sm leading-7 rounded-xl border bg-slate-50 placeholder:text-slate-400 resize-y
+                                     focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition
+                                     @error('motivation') border-red-400 @else border-slate-300 @enderror">{{ old('motivation') }}</textarea>
+                    @error('motivation')
+                        <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Resume file --}}
+                <div>
+                    <label for="resume_file_path" class="block mb-2 text-sm font-medium text-slate-700">فایل رزومه</label>
+                    <label for="resume_file_path"
+                           class="flex flex-col items-center justify-center gap-2 px-4 py-8 text-center rounded-xl border-2 border-dashed cursor-pointer
+                                  bg-slate-50 hover:bg-indigo-50/50 hover:border-indigo-300 transition-colors
+                                  @error('resume_file_path') border-red-400 @else border-slate-300 @enderror">
+                        <svg class="w-9 h-9 text-indigo-500" fill="none" stroke="currentColor" stroke-width="1.6"
+                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/>
+                        </svg>
+                        <span id="resume-file-name" class="text-sm font-medium text-slate-600">برای انتخاب فایل کلیک کنید</span>
+                        <span class="text-xs text-slate-400">فرمت‌های مجاز: PDF، DOC، DOCX</span>
+                    </label>
+                    <input type="file" id="resume_file_path" name="resume_file_path" accept=".pdf,.doc,.docx" class="sr-only">
+                    @error('resume_file_path')
+                        <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                {{-- Actions --}}
+                <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 pt-2">
+                    <a href="{{ route('user.dashboard') }}"
+                       class="px-6 py-3 text-center text-sm font-semibold text-slate-600 rounded-xl border border-slate-300 hover:bg-slate-50 transition-colors">
+                        انصراف
+                    </a>
+                    <button type="submit"
+                            class="inline-flex items-center justify-center gap-2 px-8 py-3 text-sm font-bold text-white rounded-xl
+                                   bg-gradient-to-l from-indigo-600 to-fuchsia-500 shadow-lg shadow-indigo-500/30
+                                   hover:shadow-xl hover:-translate-y-0.5
+                                   focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+                        ارسال درخواست
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M19 12H5M11 6l-6 6 6 6"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+@endsection
+
+@push('scripts')
+<script>
+    // Show selected file name in the upload box
+    document.getElementById('resume_file_path')?.addEventListener('change', function () {
+        const label = document.getElementById('resume-file-name');
+        label.textContent = this.files.length ? this.files[0].name : 'برای انتخاب فایل کلیک کنید';
+    });
+</script>
+@endpush
