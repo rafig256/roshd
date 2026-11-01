@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\Auth\LoginController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Auth\RegisterController;
 
 // --- مسیرهای عمومی سایت ---
 Route::get('/', function () {
@@ -12,12 +13,10 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/register', function () {
-    return redirect('/register'); // موقت، تا صفحه اصلی ساخته شود
-});
-
-Route::get('/register', function () {
     return view('auth.register');
 })->name('register');
+
+Route::post('/register', [RegisterController::class, 'register'])->name('register.submit');
 
 Route::prefix('admin')->name('admin.')->group(function () {
     

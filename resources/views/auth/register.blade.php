@@ -25,7 +25,7 @@
                 <p class="mt-2 text-sm text-slate-300">برای عضویت در جامعه نوآوران، اطلاعات زیر را تکمیل کنید.</p>
             </div>
 
-            <form method="POST" action="#" class="space-y-5" novalidate>
+            <form method="POST" action="{{ route('register.submit') }}" class="space-y-5" novalidate>
                 @csrf
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
