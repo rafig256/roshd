@@ -3,9 +3,39 @@
 @section('title', 'ویرایش کاربر')
 @section('page-title', 'ویرایش کاربر')
 
-@section('content')
+@push('styles')
     <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
+    <style>
+        /* اصلاح استایل Tom Select برای هماهنگی با Tailwind و RTL */
+        .ts-wrapper .ts-control {
+            @apply w-full px-4 py-2.5 text-sm rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none;
+            min-height: 46px;
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem;
+        }
+        .ts-wrapper.focus .ts-control {
+            @apply ring-2 ring-indigo-500 border-indigo-500;
+        }
+        .ts-dropdown {
+            @apply text-sm rounded-lg border border-slate-300 shadow-lg;
+            direction: rtl;
+            text-align: right;
+        }
+        .ts-dropdown .option {
+            @apply px-3 py-2 text-slate-700 hover:bg-slate-50 cursor-pointer;
+        }
+        .ts-dropdown .active {
+            @apply bg-indigo-50 text-indigo-700;
+        }
+        /* اصلاح موقعیت آیکون‌ها در حالت RTL */
+        .ts-wrapper.single .ts-control, .ts-wrapper.multi .ts-control {
+            background-position: left 0.75rem center !important;
+            padding-left: 2rem !important;
+        }
+    </style>
+@endpush
+
+@section('content')
     <div class="max-w-3xl mx-auto">
 
         {{-- Page header --}}
@@ -32,109 +62,70 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
-            {{-- Name --}}
-            <div>
-                <label for="name" class="block mb-2 text-sm font-medium text-slate-700">نام</label>
-                <input type="text"
-                       id="name"
-                       name="name"
-                       value="{{ old('name', $user->name) }}"
-                       class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none
-                              @error('name') border-red-400 @else border-slate-300 @enderror">
-                @error('name')
-                    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Name --}}
+                <div>
+                    <label for="name" class="block mb-2 text-sm font-medium text-slate-700">نام</label>
+                    <input type="text" id="name" name="name" value="{{ old('name', $user->name) }}"
+                           class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none @error('name') border-red-400 @else border-slate-300 @enderror">
+                    @error('name') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
 
-            {{-- Family --}}
-            <div>
-                <label for="family" class="block mb-2 text-sm font-medium text-slate-700">نام خانوادگی</label>
-                <input type="text"
-                       id="family"
-                       name="family"
-                       value="{{ old('family', $user->family) }}"
-                       class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none
-                              @error('family') border-red-400 @else border-slate-300 @enderror">
-                @error('family')
-                    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Family --}}
+                <div>
+                    <label for="family" class="block mb-2 text-sm font-medium text-slate-700">نام خانوادگی</label>
+                    <input type="text" id="family" name="family" value="{{ old('family', $user->family) }}"
+                           class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none @error('family') border-red-400 @else border-slate-300 @enderror">
+                    @error('family') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
 
-            {{-- National Code --}}
-            <div>
-                <label for="national_code" class="block mb-2 text-sm font-medium text-slate-700">کد ملی</label>
-                <input type="text"
-                       id="national_code"
-                       name="national_code"
-                       dir="ltr"
-                       value="{{ old('national_code', $user->national_code) }}"
-                       class="w-full px-4 py-2.5 text-sm text-left rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none
-                              @error('national_code') border-red-400 @else border-slate-300 @enderror">
-                @error('national_code')
-                    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- National Code --}}
+                <div>
+                    <label for="national_code" class="block mb-2 text-sm font-medium text-slate-700">کد ملی</label>
+                    <input type="text" id="national_code" name="national_code" dir="ltr" value="{{ old('national_code', $user->national_code) }}"
+                           class="w-full px-4 py-2.5 text-sm text-left rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none @error('national_code') border-red-400 @else border-slate-300 @enderror">
+                    @error('national_code') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
 
-            {{-- Mobile --}}
-            <div>
-                <label for="mobile" class="block mb-2 text-sm font-medium text-slate-700">موبایل</label>
-                <input type="text"
-                       id="mobile"
-                       name="mobile"
-                       dir="ltr"
-                       value="{{ old('mobile', $user->mobile) }}"
-                       class="w-full px-4 py-2.5 text-sm text-left rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none
-                              @error('mobile') border-red-400 @else border-slate-300 @enderror">
-                @error('mobile')
-                    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Mobile --}}
+                <div>
+                    <label for="mobile" class="block mb-2 text-sm font-medium text-slate-700">موبایل</label>
+                    <input type="text" id="mobile" name="mobile" dir="ltr" value="{{ old('mobile', $user->mobile) }}"
+                           class="w-full px-4 py-2.5 text-sm text-left rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none @error('mobile') border-red-400 @else border-slate-300 @enderror">
+                    @error('mobile') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
 
-            {{-- Status --}}
-            <div>
-                <label for="status" class="block mb-2 text-sm font-medium text-slate-700">وضعیت</label>
-                <select id="status"
-                        name="status"
-                        class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none
-                               @error('status') border-red-400 @else border-slate-300 @enderror">
-                    <option value="active" {{ old('status', $user->status) === 'active' ? 'selected' : '' }}>فعال</option>
-                    <option value="blocked" {{ old('status', $user->status) === 'blocked' ? 'selected' : '' }}>مسدود</option>
-                </select>
-                @error('status')
-                    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Status --}}
+                <div>
+                    <label for="status" class="block mb-2 text-sm font-medium text-slate-700">وضعیت</label>
+                    <select id="status" name="status"
+                            class="w-full px-4 py-2.5 text-sm rounded-lg border bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none @error('status') border-red-400 @else border-slate-300 @enderror">
+                        <option value="active" {{ old('status', $user->status) === 'active' ? 'selected' : '' }}>فعال</option>
+                        <option value="blocked" {{ old('status', $user->status) === 'blocked' ? 'selected' : '' }}>مسدود</option>
+                    </select>
+                    @error('status') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
 
-            {{-- Roles --}}
-            <div>
-                <label class="block mb-2 text-sm font-medium text-slate-700">نقش‌ها</label>
-                <select id="roles-select"
-                        name="roles[]"
-                        multiple
-                        class="hidden">
-                    @foreach ($roles as $role)
-                        <option value="{{ $role->name }}"
-                                {{ in_array($role->name, $user->getRoleNames()->toArray()) ? 'selected' : '' }}>
-                            {{ $role->label ?? $role->name }}
-                        </option>
-                    @endforeach
-                </select>
-                <p class="mt-1.5 text-xs text-slate-500">نقش فناور طی روند تخصیص می یابد.</p>
-                @error('roles')
-                    <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
-                @enderror
-            </div>
+                {{-- Roles --}}
+                <div>
+                    <label class="block mb-2 text-sm font-medium text-slate-700">نقش‌ها</label>
+                    <select id="roles-select" name="roles[]" multiple placeholder="جستجوی نقش...">
+                        @foreach ($roles as $role)
+                            <option value="{{ $role->name }}" {{ in_array($role->name, $user->getRoleNames()->toArray()) ? 'selected' : '' }}>
+                                {{ $role->label ?? $role->name }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <p class="mt-1.5 text-xs text-slate-500">نقش فناور طی روند تخصیص می یابد.</p>
+                    @error('roles') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
 
             </div>
 
             {{-- Submit --}}
-            <div class="flex justify-end">
+            <div class="flex justify-end pt-4">
                 <button type="submit"
-                        class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-lg
-                               hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
-                               transition-colors">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        class="inline-flex items-center gap-2 px-6 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                         <path d="M5 13l4 4L19 7"/>
                     </svg>
                     ذخیره تغییرات
@@ -142,58 +133,19 @@
             </div>
         </form>
     </div>
+@endsection
 
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const originalSelect = document.getElementById('roles-select');
-            
-            if (originalSelect) {
-                const tomSelect = new TomSelect('#roles-select', {
-                    plugins: ['dropdown_input'],
-                    maxOptions: 100,
-                    maxItems: null,
-                    placeholder: 'جستجوی نقش...',
-                    searchPlaceholder: 'جستجوی نقش...',
-                    sortField: {
-                        field: 'text',
-                        direction: 'asc'
-                    },
-                    dropdownParent: 'body',
-                    controlInput: '<input type="text" class="w-full px-4 py-2.5 text-sm rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none" placeholder="جستجوی نقش...">',
-                    render: {
-                        option: function(data, escapeFn) {
-                            return '<div class="flex items-center px-3 py-2"><span class="text-sm text-slate-700">' + escapeFn(data.text) + '</span></div>';
-                        }
-                    }
-                });
-
-                // Replicate Tom Select styles to match Tailwind inputs
-                const updateStyles = () => {
-                    const tsControl = document.querySelector('.ts-control');
-                    const tsDropdown = document.querySelector('.ts-dropdown');
-                    
-                    if (tsControl) {
-                        tsControl.className = 'w-full px-4 py-2.5 text-sm rounded-lg border border-slate-300 bg-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none';
-                        tsControl.style.minHeight = '42px';
-                        tsControl.style.padding = '0.625rem 1rem';
-                        tsControl.style.direction = 'rtl';
-                    }
-                    
-                    if (tsDropdown) {
-                        tsDropdown.className = 'ts-dropdown w-full border border-slate-300 rounded-lg bg-white shadow-lg';
-                    }
-                };
-                
-                // Apply styles after Tom Select initializes
-                setTimeout(updateStyles, 100);
-                
-                // Observe DOM changes and apply styles dynamically
-                const observer = new MutationObserver(updateStyles);
-                const tsContainer = document.querySelector('.ts-control');
-                if (tsContainer) {
-                    observer.observe(tsContainer, { attributes: true, childList: true, subtree: true });
-                }
-            }
+            new TomSelect('#roles-select', {
+                plugins: ['remove_button'], // دکمه ضربدر برای حذف تگ‌ها
+                maxItems: null,
+                create: false,
+                placeholder: 'جستجوی نقش...',
+                dir: 'rtl', // فعالسازی حالت راست‌چین
+            });
         });
     </script>
-@endsection
+@endpush
