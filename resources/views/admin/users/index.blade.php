@@ -79,7 +79,7 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-slate-800">
-                                {{ $user->getRoleNames()->isNotEmpty() ? $user->getRoleNames()->implode(', ') : 'کاربر عادی' }}
+                                {{ $user->roles->isNotEmpty() ? $user->roles->pluck('label')->implode(', ') : 'کاربر عادی' }}
                             </td>
                             <td class="px-6 py-4">
                                 <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium
@@ -88,17 +88,34 @@
                                 </span>
                             </td>
                             <td class="px-6 py-4 text-right">
-                                <a href="{{ route('admin.users.edit', $user->id) }}"
-                                   class="text-indigo-600 hover:text-indigo-800 hover:underline text-sm font-medium">ویرایش</a>
-                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline-block ml-3">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit"
-                                            onclick="return confirm('آیا از حذف این کاربر مطمئن هستید؟')"
-                                            class="text-red-600 hover:text-red-800 hover:underline text-sm font-medium">
-                                        حذف
-                                    </button>
-                                </form>
+                                <div class="flex items-center gap-2 justify-end">
+                                    <a href="{{ route('admin.users.edit', $user->id) }}"
+                                       class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-indigo-600 bg-indigo-50 rounded-md hover:bg-indigo-100 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2"
+                                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                                        </svg>
+                                        ویرایش
+                                    </a>
+                                    @if(auth()->id() !== $user->id)
+                                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
+                                          onsubmit="return confirm('آیا از حذف این کاربر مطمئن هستید؟')"
+                                          class="inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit"
+                                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 transition-colors">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2"
+                                                 stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                <path d="M3 6h18"/>
+                                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+                                            </svg>
+                                            حذف
+                                        </button>
+                                    </form>
+                                    @endif
+                                </div>
                             </td>
                         </tr>
                     @empty
