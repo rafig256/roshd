@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'پنل مدیریت') | مرکز نوآوری شهری</title>
+    <title>@yield('title', 'پنل مدیریت') | {{$site_settings['site_name']}}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -71,7 +71,7 @@
 
                 <span class="w-px h-8 bg-slate-200"></span>
 
-                <form method="POST" action="#">
+                <form method="POST" action="{{ route('admin.logout') }}">
                     @csrf
                     <button type="submit"
                             class="flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 rounded-lg hover:bg-red-50 transition-colors">

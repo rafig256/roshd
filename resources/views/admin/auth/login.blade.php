@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>ورود به پنل مدیریت | مرکز نوآوری شهری</title>
+    <title>ورود به پنل مدیریت |{{$site_settings['site_name']}}</title>
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -35,7 +35,7 @@
             <div class="mx-auto w-16 h-16 rounded-2xl bg-indigo-500 flex items-center justify-center text-white font-bold shadow-lg shadow-indigo-900/40">
                 لوگو
             </div>
-            <h1 class="mt-4 text-xl font-bold text-white">مرکز نوآوری شهری</h1>
+            <h1 class="mt-4 text-xl font-bold text-white">{{$site_settings['site_name']}}</h1>
             <p class="mt-1 text-sm text-slate-300">ورود به پنل مدیریت</p>
         </div>
 
@@ -108,7 +108,7 @@
         </div>
 
         <p class="mt-6 text-center text-xs text-slate-400">
-            © مرکز نوآوری شهری — تمامی حقوق محفوظ است.
+            © {{$site_settings['site_name']}} — تمامی حقوق محفوظ است.
         </p>
     </div>
 </div>
