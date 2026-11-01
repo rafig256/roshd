@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use Hash;
 use Illuminate\Http\Request;
 use Spatie\Permission\Models\Role;
 
@@ -32,6 +33,35 @@ class UserController extends Controller
         $users->appends($request->all());
 
         return view('admin.users.index', compact('users'));
+    }
+
+    public function create()
+    {
+        $roles = Role::where('name', '!=', 'innovator')->get();
+
+        return view('admin.users.create', compact('roles'));
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name'          => 'required|string|max:100',
+            'family'        => 'required|string|max:100',
+            'national_code' => 'required|string|max:10|unique:users,national_code',
+            'mobile'        => 'required|string|max:11|unique:users,mobile',
+            'password'      => 'required|string|min:6',
+            'status'        => 'required|in:active,blocked',
+            'roles'         => 'nullable|array',
+        ]);
+
+        $validated['password'] = Hash::make($validated['password']);
+
+        $user = User::create($validated);
+
+        $user->syncRoles($validated['roles'] ?? []);
+
+        return redirect()->route('admin.users.index')
+            ->with('success', 'کاربر با موفقیت ایجاد شد.');
     }
 
     public function edit(User $user)

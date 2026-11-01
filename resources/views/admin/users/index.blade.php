@@ -13,6 +13,17 @@
                 <p class="mt-1 text-sm text-slate-500">لیست کاربران ثبت‌شده در سیستم را اینجا مدیریت کنید.</p>
             </div>
 
+            <a href="{{ route('admin.users.create') }}"
+               class="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-semibold text-white bg-indigo-600 rounded-lg
+                      hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500
+                      transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M12 5v14m-7-7h14"/>
+                </svg>
+                کاربر جدید
+            </a>
+
             <form method="GET" action="{{ route('admin.users.index') }}" class="flex items-center gap-2">
                 <input type="text"
                        name="search"
