@@ -62,20 +62,38 @@
                     </svg>
                 </div>
                 <h2 class="mt-5 text-lg font-bold text-slate-900">درخواست فناوری</h2>
-                <p class="mt-2 text-sm leading-7 text-slate-600">
-                    اگر هنوز به‌عنوان فناور در مرکز نوآوری عضو نیستید، می‌توانید درخواست خود را ثبت کنید تا پس از بررسی،
-                    به امکانات و خدمات ویژه‌ی فناوران دسترسی پیدا کنید.
-                </p>
-                <a href="{{ route('user.innovator-request.create') }}"
-                   class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
-                          bg-gradient-to-l from-indigo-600 to-fuchsia-500 shadow-md shadow-indigo-500/30
-                          hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
-                    ثبت درخواست
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                        <path d="M19 12H5M11 6l-6 6 6 6"/>
-                    </svg>
-                </a>
+                @if($latestRequest && in_array($latestRequest->status, ['pending', 'approved']))
+                    {{-- Show Status --}}
+                    <div class="mt-4 space-y-3">
+                        <p class="text-sm text-slate-600">وضعیت درخواست شما:
+                            @if($latestRequest->status === 'pending')
+                                <span class="text-yellow-600 font-bold ml-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-yellow-50 text-xs">در حال بررسی</span>
+                            @else
+                                <span class="text-green-600 font-bold ml-2 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-green-50 text-xs">تأیید شده</span>
+                            @endif
+                        </p>
+                        <p class="text-xs text-slate-500">تاریخ ثبت: {{ \Morilog\Jalali\Jalalian::fromCarbon($latestRequest->created_at)->format('Y/m/d') }}</p>
+                        @if($latestRequest->status === 'approved')
+                            <p class="text-xs text-emerald-600">شما اکنون به‌عنوان فناور عضو هستید. هر فناور فقط می تواند یک طرح تایید شده داشته باشد</p>
+                        @endif
+                    </div>
+                @else
+                    {{-- Show the original description and the button --}}
+                    <p class="mt-2 text-sm leading-7 text-slate-600">
+                        اگر هنوز به‌عنوان فناور در مرکز نوآوری عضو نیستید، می‌توانید درخواست خود را ثبت کنید تا پس از بررسی،
+                        به امکانات و خدمات ویژه‌ی فناوران دسترسی پیدا کنید.
+                    </p>
+                    <a href="{{ route('user.innovator-request.create') }}"
+                       class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
+                              bg-gradient-to-l from-indigo-600 to-fuchsia-500 shadow-md shadow-indigo-500/30
+                              hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
+                        ثبت درخواست
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M19 12H5M11 6l-6 6 6 6"/>
+                        </svg>
+                    </a>
+                @endif
             </div>
 
             {{-- 2. My ideas --}}
