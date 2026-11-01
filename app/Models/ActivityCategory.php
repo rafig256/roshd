@@ -6,5 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ActivityCategory extends Model
 {
-    //
+    public function innovatorRequests()
+    {
+        return $this->hasMany(InnovatorRequest::class);
+    }
 }

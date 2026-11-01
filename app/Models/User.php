@@ -42,4 +42,9 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function innovatorRequests()
+    {
+        return $this->hasMany(InnovatorRequest::class);
+    }
 }
