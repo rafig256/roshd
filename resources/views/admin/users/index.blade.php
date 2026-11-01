@@ -90,6 +90,15 @@
                             <td class="px-6 py-4 text-right">
                                 <a href="{{ route('admin.users.edit', $user->id) }}"
                                    class="text-indigo-600 hover:text-indigo-800 hover:underline text-sm font-medium">ویرایش</a>
+                                <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" class="inline-block ml-3">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit"
+                                            onclick="return confirm('آیا از حذف این کاربر مطمئن هستید؟')"
+                                            class="text-red-600 hover:text-red-800 hover:underline text-sm font-medium">
+                                        حذف
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     @empty

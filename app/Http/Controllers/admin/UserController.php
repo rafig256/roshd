@@ -95,4 +95,15 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')
             ->with('success', 'اطلاعات کاربر با موفقیت ویرایش شد.');
     }
+
+    public function destroy(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'شما نمی‌توانید حساب کاربری خودتان را حذف کنید.');
+        }
+
+        $user->delete();
+
+        return back()->with('success', 'کاربر با موفقیت حذف شد.');
+    }
 }
