@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "998a69acdd6cc70fb1e67d31d2ca13f6",
+    "content-hash": "46c50428e5314d3390109899090bb1cb",
     "packages": [
         {
             "name": "brick/math",
@@ -443,6 +443,65 @@
                 }
             ],
             "time": "2026-10-19T17:53:57+00:00"
+        },
+        {
+            "name": "edulazaro/wiretoast",
+            "version": "v1.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/edulazaro/wiretoast.git",
+                "reference": "34091fd84727d7e45d3b670cf8887675135244a7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/edulazaro/wiretoast/zipball/34091fd84727d7e45d3b670cf8887675135244a7",
+                "reference": "34091fd84727d7e45d3b670cf8887675135244a7",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": ">=11.0",
+                "illuminate/view": ">=11.0",
+                "php": ">=8.2"
+            },
+            "suggest": {
+                "livewire/livewire": "Use $this->notify('Saved', 'success') or $this->dispatch('notify', ...) from PHP components."
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "EduLazaro\\Wiretoast\\WiretoastServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "EduLazaro\\Wiretoast\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Edu Lazaro",
+                    "email": "edu@edulazaro.com"
+                }
+            ],
+            "description": "Framework-agnostic toast notification system for Laravel, Livewire and Alpine. Pure CSS themes, custom-theme via variables, drop-in API.",
+            "keywords": [
+                "alpine",
+                "laravel",
+                "livewire",
+                "notifications",
+                "toast"
+            ],
+            "support": {
+                "issues": "https://github.com/edulazaro/wiretoast/issues",
+                "source": "https://github.com/edulazaro/wiretoast/tree/v1.2.0"
+            },
+            "time": "2026-10-04T12:35:17+00:00"
         },
         {
             "name": "egulias/email-validator",

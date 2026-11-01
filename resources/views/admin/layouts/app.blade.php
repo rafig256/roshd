@@ -62,11 +62,11 @@
             <div class="flex items-center gap-4">
                 <div class="flex items-center gap-3">
                     <div class="w-9 h-9 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold text-sm">
-                        م
+                        {{ mb_substr(auth()->user()->name, 0, 1) }}
                     </div>
                     <div class="leading-tight">
-                        <div class="text-sm font-semibold text-slate-800">مدیر سیستم</div>
-                        <div class="text-xs text-slate-500">مدیر کل</div>
+                        <div class="text-sm font-semibold text-slate-800">{{ auth()->user()->name . ' ' . auth()->user()->family }}</div>
+                        <div class="text-xs text-slate-500">{{ auth()->user()->roles->first()->label ?? auth()->user()->getRoleNames()->first() ?? 'کاربر' }}</div>
                     </div>
                 </div>
 
@@ -100,5 +100,16 @@
 </div>
 
 @stack('scripts')
+    <x-wiretoast />
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            @if(session('success'))
+                window.notify("{{ session('success') }}", "success");
+            @endif
+            @if(session('error'))
+                window.notify("{{ session('error') }}", "error");
+            @endif
+        });
+    </script>
 </body>
 </html>

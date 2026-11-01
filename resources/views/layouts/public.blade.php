@@ -12,6 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -64,17 +65,65 @@
                 @endforeach
             </nav>
 
-            {{-- Left: auth buttons --}}
+            {{-- Left: auth buttons / user dropdown --}}
             <div class="hidden lg:flex items-center gap-2">
-                <a href="#"
-                   class="px-4 py-2 text-sm font-semibold text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
-                    ورود
-                </a>
-                <a href="/register"
-                   class="px-5 py-2 text-sm font-semibold text-white rounded-lg bg-gradient-to-l from-indigo-600 to-fuchsia-500
-                          shadow-md shadow-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all">
-                    ثبت‌نام
-                </a>
+                @guest
+                    <a href="{{ route('login') }}"
+                       class="px-4 py-2 text-sm font-semibold text-slate-700 rounded-lg hover:bg-slate-100 transition-colors">
+                        ورود
+                    </a>
+                    <a href="{{ route('register') }}"
+                       class="px-5 py-2 text-sm font-semibold text-white rounded-lg bg-gradient-to-l from-indigo-600 to-fuchsia-500
+                              shadow-md shadow-indigo-500/30 hover:shadow-lg hover:shadow-indigo-500/40 hover:-translate-y-0.5 transition-all">
+                        ثبت‌نام
+                    </a>
+                @else
+                    <div class="relative group" x-data="{ open: false }">
+                        <button @click="open = !open" @click.outside="open = false"
+                                class="flex items-center gap-2 px-4 py-2 text-sm font-semibold text-slate-700 rounded-lg hover:bg-slate-100 transition-colors"
+                                aria-expanded="false" aria-haspopup="true">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center text-white font-bold text-sm">
+                                {{ mb_substr(auth()->user()->name, 0, 1) }}
+                            </div>
+                            <span class="hidden sm:block">{{ auth()->user()->name }}</span>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </button>
+
+                        <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                             x-transition:enter-start="transform opacity-0 scale-95"
+                             x-transition:enter-end="transform opacity-100 scale-100"
+                             x-transition:leave="transition ease-in duration-75"
+                             x-transition:leave-start="transform opacity-100 scale-100"
+                             x-transition:leave-end="transform opacity-0 scale-95"
+                             class="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-slate-100 py-2"
+                             style="display: none;">
+                            <div class="px-4 py-3 border-b border-slate-100">
+                                <p class="text-xs font-medium text-slate-500">خوش آمدید</p>
+                                <p class="text-sm font-semibold text-slate-800 truncate">{{ auth()->user()->name }} {{ auth()->user()->family }}</p>
+                            </div>
+                            <a href="{{ route('dashboard') }}"
+                               class="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round"/>
+                                    <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                                پنل کاربری من
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" class="block">
+                                @csrf
+                                <button type="submit"
+                                        class="flex w-full items-center gap-3 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                        <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke-linecap="round" stroke-linejoin="round"/>
+                                    </svg>
+                                    خروج
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                @endguest
             </div>
 
             {{-- Mobile toggle (pure HTML, no JS needed) --}}
@@ -99,15 +148,39 @@
                 </a>
             @endforeach
         </nav>
-        <div class="px-4 pb-4 pt-2 grid grid-cols-2 gap-2">
-            <a href="#"
-               class="py-2.5 text-center text-sm font-semibold text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50">
-                ورود
-            </a>
-            <a href="/register"
-               class="py-2.5 text-center text-sm font-semibold text-white rounded-lg bg-gradient-to-l from-indigo-600 to-fuchsia-500">
-                ثبت‌نام
-            </a>
+        <div class="px-4 pb-4 pt-2 space-y-2">
+            @guest
+                <a href="{{ route('login') }}"
+                   class="py-2.5 text-center text-sm font-semibold text-slate-700 border border-slate-300 rounded-lg hover:bg-slate-50 block">
+                    ورود
+                </a>
+                <a href="{{ route('register') }}"
+                   class="py-2.5 text-center text-sm font-semibold text-white rounded-lg bg-gradient-to-l from-indigo-600 to-fuchsia-500 block">
+                    ثبت‌نام
+                </a>
+            @else
+                <div class="border-t border-slate-200 pt-3">
+                    <p class="text-xs font-medium text-slate-500 mb-2">خوش آمدید، {{ auth()->user()->name }}</p>
+                    <a href="{{ route('dashboard') }}"
+                       class="flex items-center justify-center gap-2 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 hover:text-indigo-600 rounded-lg transition-colors block">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke-linecap="round" stroke-linejoin="round"/>
+                            <circle cx="12" cy="7" r="4" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                        پنل کاربری من
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit"
+                                class="flex w-full items-center justify-center gap-2 px-4 py-2.5 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-colors">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            خروج
+                        </button>
+                    </form>
+                </div>
+            @endguest
         </div>
     </div>
 </header>
@@ -189,5 +262,16 @@
 </footer>
 
 @stack('scripts')
+<x-wiretoast />
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        @if(session('success'))
+            window.notify("{{ session('success') }}", "success");
+        @endif
+        @if(session('error'))
+            window.notify("{{ session('error') }}", "error");
+        @endif
+    });
+</script>
 </body>
 </html>
