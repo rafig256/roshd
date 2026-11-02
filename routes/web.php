@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\LoginController as UserLoginController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\InnovatorRequestController as UserInnovatorRequestController;
 use App\Http\Controllers\User\PlanController as UserPlanController; // 👈 Alias اضافه شد
+use App\Http\Controllers\User\OrganizationController;
 
 // ==========================================
 // ۱. مسیرهای عمومی سایت (بدون نیاز به لاگین)
@@ -53,6 +54,10 @@ Route::middleware('auth')->name('user.')->group(function () {
     Route::post('/plans', [UserPlanController::class, 'store'])->name('plans.store');
     Route::get('/plans/{plan}/edit', [UserPlanController::class, 'edit'])->name('plans.edit');
     Route::put('/plans/{plan}', [UserPlanController::class, 'update'])->name('plans.update');
+
+    // مسیرهای سازمان/تیم (کاربر عادی)
+    Route::get('/organizations/create', [OrganizationController::class, 'create'])->name('organizations.create');
+    Route::post('/organizations', [OrganizationController::class, 'store'])->name('organizations.store');
 
     Route::get('/download/resume/{filename}', [FileController::class, 'downloadResume'])->name('download.resume');
 });

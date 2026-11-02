@@ -252,6 +252,97 @@
                 </a>
             </div>
 
+            {{-- Team card --}}
+@php
+    $user = auth()->user();
+
+    // این دو متغیر از کنترلر می‌آیند (پایین‌تر توضیح داده شده)
+    $team        = $latestOrganization ?? null;
+    $planStatus = $latestPlan?->status instanceof \BackedEnum ? $latestPlan->status->value : $latestPlan?->status;
+    $canCreate  = $user->is_innovator && $planStatus === 'approved';
+
+    $orgStatusValue = $team?->status instanceof \BackedEnum ? $team->status->value : ($team?->status ?? null);
+    $orgStatusLabel = $team?->status instanceof \BackedEnum && method_exists($team->status, 'label')
+        ? $team->status->label()
+        : match ($orgStatusValue) {
+            'pending'  => 'در انتظار تأیید',
+            'approved' => 'تأیید شده',
+            'rejected' => 'رد شده',
+            default    => $orgStatusValue ?: 'نامشخص',
+        };
+    $orgStatusClass = match ($orgStatusValue) {
+        'approved' => 'bg-emerald-100 text-emerald-800',
+        'pending'  => 'bg-amber-100 text-amber-800',
+        'rejected' => 'bg-red-100 text-red-800',
+        default    => 'bg-slate-100 text-slate-700',
+    };
+@endphp
+
+<div class="group flex flex-col p-7 bg-white rounded-2xl border border-slate-200
+            hover:border-cyan-200 hover:shadow-xl hover:shadow-cyan-500/10 hover:-translate-y-1 transition-all">
+    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-white flex items-center justify-center shadow-lg shadow-cyan-500/30">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-4.13a4 4 0 11-8 0 4 4 0 018 0zm6 0a3 3 0 11-6 0 3 3 0 016 0z"/>
+        </svg>
+    </div>
+
+    <h2 class="mt-5 text-lg font-bold text-slate-900">تیم من</h2>
+
+    @if ($team)
+        {{-- حالت ۳: کاربر تیم دارد --}}
+        <div class="mt-3 flex items-center gap-3">
+            @if (!empty($team->logo))
+                <img src="{{ Storage::url($team->logo) }}" alt="{{ $team->name }}"
+                     class="w-11 h-11 rounded-xl object-cover border border-slate-200">
+            @endif
+            <div class="min-w-0">
+                <p class="text-sm font-bold text-slate-800 truncate">{{ $team->name }}</p>
+                <span class="mt-1 inline-block px-2.5 py-0.5 text-xs font-semibold rounded-full {{ $orgStatusClass }}">
+                    {{ $orgStatusLabel }}
+                </span>
+            </div>
+        </div>
+        <p class="mt-3 text-sm leading-7 text-slate-600">
+            اطلاعات واحد فناور، اعضا و فعالیت‌های خود را از اینجا مدیریت کنید.
+        </p>
+        <a href="#"
+           class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-cyan-700 bg-cyan-50 rounded-xl
+                  hover:bg-cyan-100 transition-colors sm:self-start">
+            مدیریت تیم
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M19 12H5M11 6l-6 6 6 6"/>
+            </svg>
+        </a>
+
+    @elseif ($canCreate)
+        {{-- حالت ۲: فناور با طرح تأییدشده و بدون تیم --}}
+        <p class="mt-2 text-sm leading-7 text-slate-600">
+            طرح شما تأیید شده است. اکنون می‌توانید تیم (واحد فناور) خود را ایجاد کنید و فعالیت رسمی‌تان را آغاز نمایید.
+        </p>
+        <a href="{{ route('user.organizations.create') }}"
+           class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
+                  bg-gradient-to-l from-cyan-500 to-blue-600 shadow-md shadow-cyan-500/30
+                  hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
+            ایجاد تیم
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                 stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                <path d="M19 12H5M11 6l-6 6 6 6"/>
+            </svg>
+        </a>
+
+    @else
+        {{-- حالت ۱: فناور نیست یا طرح تأییدشده ندارد --}}
+        <p class="mt-2 text-sm leading-7 text-slate-600">
+            برای ایجاد تیم، ابتدا باید طرح شما تأیید شود.
+        </p>
+        <span class="mt-6 inline-flex items-center justify-center px-5 py-2.5 text-sm font-semibold text-slate-400 bg-slate-100 rounded-xl cursor-not-allowed sm:self-start">
+            هنوز امکان‌پذیر نیست
+        </span>
+    @endif
+</div>
+
             {{-- 4. Logout (red card) --}}
             <div class="group flex flex-col p-7 bg-red-50/60 rounded-2xl border border-red-200
                         hover:border-red-300 hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-1 transition-all">
