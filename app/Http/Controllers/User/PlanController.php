@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Enums\PlanStatus;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityCategory;
 use App\Models\Plan;
@@ -66,7 +67,7 @@ class PlanController extends Controller
             abort(403);
         }
 
-        if ($plan->status !== 'rejected') {
+        if ($plan->status !== \App\Enums\PlanStatus::Rejected) {
             return back()->with('error', 'شما فقط می‌توانید طرح‌های رد شده را ویرایش کنید.');
         }
 
@@ -80,7 +81,7 @@ class PlanController extends Controller
             abort(403);
         }
 
-        if ($plan->status !== 'rejected') {
+        if ($plan->status !== PlanStatus::Rejected) {
             return back()->with('error', 'شما فقط می‌توانید طرح‌های رد شده را ویرایش کنید.');
         }
 
