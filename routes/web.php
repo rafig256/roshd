@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\InnovatorRequestController as AdminInnovatorRequestController; // 👈 اینجا Alias دادیم
+use App\Http\Controllers\FileController;
 
 // --- کنترلرهای کاربران عادی (User) ---
 use App\Http\Controllers\Auth\RegisterController;
@@ -77,5 +78,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/innovator-requests/{innovatorRequest}', [AdminInnovatorRequestController::class, 'show'])->name('innovator-requests.show');
         Route::post('/innovator-requests/{innovatorRequest}/approve', [AdminInnovatorRequestController::class, 'approve'])->name('innovator-requests.approve');
         Route::post('/innovator-requests/{innovatorRequest}/reject', [AdminInnovatorRequestController::class, 'reject'])->name('innovator-requests.reject');
+        
+        // دانلود رزومه
+        Route::get('/download/resume/{filename}', [FileController::class, 'downloadResume'])->name('download.resume');
     });
 });

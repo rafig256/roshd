@@ -143,7 +143,7 @@
             </div>
             <div class="p-6">
                 @if (!is_null($innovatorRequest->resume_file_path))
-                    <a href="{{ Storage::url($innovatorRequest->resume_file_path) }}" target="_blank" rel="noopener"
+                    <a href="{{ route('admin.download.resume', basename($innovatorRequest->resume_file_path)) }}"
                        class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg
                               hover:bg-indigo-100 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>
