@@ -43,6 +43,8 @@ Route::middleware('auth')->name('user.')->group(function () {
     // مسیرهای درخواست فناوری (کاربر عادی)
     Route::get('/innovator-request', [UserInnovatorRequestController::class, 'create'])->name('innovator-request.create');
     Route::post('/innovator-request', [UserInnovatorRequestController::class, 'store'])->name('innovator-request.store');
+    Route::get('/innovator-request/{innovatorRequest}/edit', [UserInnovatorRequestController::class, 'edit'])->name('innovator-request.edit');
+    Route::put('/innovator-request/{innovatorRequest}', [UserInnovatorRequestController::class, 'update'])->name('innovator-request.update');
 });
 
 // ==========================================

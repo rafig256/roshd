@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ActivityCategory;
 use App\Models\InnovatorRequest;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Morilog\Jalali\CalendarUtils;
 
 class InnovatorRequestController extends Controller
@@ -65,5 +66,72 @@ class InnovatorRequestController extends Controller
 
         return redirect()->route('user.dashboard')
             ->with('success', 'درخواست فناوری شما با موفقیت ثبت شد و در انتظار بررسی قرار گرفت.');
+    }
+
+    public function edit(InnovatorRequest $innovatorRequest)
+    {
+        if ($innovatorRequest->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if (!in_array($innovatorRequest->status, ['approved', 'rejected'])) {
+            return back()->with('error', 'شما فقط می‌توانید درخواست‌های تأیید شده یا رد شده را ویرایش کنید.');
+        }
+
+        $categories = ActivityCategory::where('is_active', true)->get();
+        return view('user.innovator-request.edit', compact('innovatorRequest', 'categories'));
+    }
+
+    public function update(Request $request, InnovatorRequest $innovatorRequest)
+    {
+        if ($innovatorRequest->user_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if (!in_array($innovatorRequest->status, ['approved', 'rejected'])) {
+            return back()->with('error', 'شما فقط می‌توانید درخواست‌های تأیید شده یا رد شده را ویرایش کنید.');
+        }
+
+        $validated = $request->validate([
+            'activity_category_id' => 'required|exists:activity_categories,id',
+            'entry_date'           => 'nullable|string',
+            'bio'                  => 'required|string',
+            'motivation'           => 'required|string',
+            'resume_file_path'     => 'nullable|file|mimes:pdf,doc,docx|max:2048',
+        ]);
+
+        $path = $innovatorRequest->resume_file_path;
+        if ($request->hasFile('resume_file_path')) {
+            if ($path && Storage::disk('public')->exists($path)) {
+                Storage::disk('public')->delete($path);
+            }
+            $path = $request->file('resume_file_path')->store('resumes', 'public');
+        }
+
+        // Convert Jalali date to Gregorian
+        $entryDate = null;
+        if (!empty($validated['entry_date'])) {
+            $parts = explode('/', $validated['entry_date']);
+            if (count($parts) === 3) {
+                $gregorianArray = CalendarUtils::toGregorian(
+                    (int)$parts[0],
+                    (int)$parts[1],
+                    (int)$parts[2]
+                );
+                $entryDate = implode('-', $gregorianArray);
+            }
+        }
+
+        $innovatorRequest->update([
+            'activity_category_id' => $validated['activity_category_id'],
+            'entry_date'           => $entryDate,
+            'bio'                  => $validated['bio'],
+            'motivation'           => $validated['motivation'],
+            'resume_file_path'     => $path,
+            'status'               => 'pending',
+        ]);
+
+        return redirect()->route('user.dashboard')
+            ->with('success', 'درخواست شما ویرایش شد و در انتظار بررسی مجدد است.');
     }
 }

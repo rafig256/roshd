@@ -62,8 +62,29 @@
                     </svg>
                 </div>
                 <h2 class="mt-5 text-lg font-bold text-slate-900">درخواست فناوری</h2>
-                @if($latestRequest && in_array($latestRequest->status, ['pending', 'approved']))
-                    {{-- Show Status --}}
+
+                @if(!$latestRequest || $latestRequest->status === 'rejected')
+                    {{-- حالت اول: کاربر درخواستی ندارد یا درخواستش رد شده است --}}
+                    <p class="mt-2 text-sm leading-7 text-slate-600">
+                        @if($latestRequest && $latestRequest->status === 'rejected')
+                            <span class="block mb-2 text-red-600 font-bold">درخواست قبلی شما رد شده است.</span>
+                        @endif
+                        برای تبدیل شدن به فناور، درخواست خود را ثبت کنید تا پس از بررسی،
+                        به امکانات و خدمات ویژه‌ی فناوران دسترسی پیدا کنید.
+                    </p>
+                    <a href="{{ $latestRequest && $latestRequest->status === 'rejected' ? route('user.innovator-request.edit', $latestRequest->id) : route('user.innovator-request.create') }}"
+                       class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
+                              bg-gradient-to-l from-indigo-600 to-fuchsia-500 shadow-md shadow-indigo-500/30
+                              hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
+                        {{ $latestRequest && $latestRequest->status === 'rejected' ? 'ویرایش درخواست رد شده' : 'ثبت درخواست' }}
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M19 12H5M11 6l-6 6 6 6"/>
+                        </svg>
+                    </a>
+
+                @else
+                    {{-- حالت دوم: درخواست Pending یا Approved است --}}
                     <div class="mt-4 space-y-3">
                         <p class="text-sm text-slate-600">وضعیت درخواست شما:
                             @if($latestRequest->status === 'pending')
@@ -73,26 +94,22 @@
                             @endif
                         </p>
                         <p class="text-xs text-slate-500">تاریخ ثبت: {{ \Morilog\Jalali\Jalalian::fromCarbon($latestRequest->created_at)->format('Y/m/d') }}</p>
+                        
                         @if($latestRequest->status === 'approved')
-                            <p class="text-xs text-emerald-600">شما اکنون به‌عنوان فناور عضو هستید. هر فناور فقط می تواند یک طرح تایید شده داشته باشد</p>
+                            <p class="text-xs text-emerald-600">شما اکنون به‌عنوان فناور عضو هستید.</p>
+                            
+                            {{-- دکمه ویرایش فقط برای درخواست‌های تایید شده --}}
+                            <a href="{{ route('user.innovator-request.edit', $latestRequest->id) }}"
+                               class="mt-4 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl
+                                      hover:bg-indigo-100 hover:border-indigo-300 transition-colors sm:self-start">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
+                                </svg>
+                                ویرایش درخواست
+                            </a>
                         @endif
                     </div>
-                @else
-                    {{-- Show the original description and the button --}}
-                    <p class="mt-2 text-sm leading-7 text-slate-600">
-                        اگر هنوز به‌عنوان فناور در مرکز نوآوری عضو نیستید، می‌توانید درخواست خود را ثبت کنید تا پس از بررسی،
-                        به امکانات و خدمات ویژه‌ی فناوران دسترسی پیدا کنید.
-                    </p>
-                    <a href="{{ route('user.innovator-request.create') }}"
-                       class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
-                              bg-gradient-to-l from-indigo-600 to-fuchsia-500 shadow-md shadow-indigo-500/30
-                              hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
-                        ثبت درخواست
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                            <path d="M19 12H5M11 6l-6 6 6 6"/>
-                        </svg>
-                    </a>
                 @endif
             </div>
 
