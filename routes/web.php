@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController as UserLoginController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\InnovatorRequestController as UserInnovatorRequestController; // 👈 اینجا هم Alias دادیم
+use App\Http\Controllers\User\PlanController;
 
 // ==========================================
 // ۱. مسیرهای عمومی سایت (بدون نیاز به لاگین)
@@ -45,6 +46,10 @@ Route::middleware('auth')->name('user.')->group(function () {
     Route::post('/innovator-request', [UserInnovatorRequestController::class, 'store'])->name('innovator-request.store');
     Route::get('/innovator-request/{innovatorRequest}/edit', [UserInnovatorRequestController::class, 'edit'])->name('innovator-request.edit');
     Route::put('/innovator-request/{innovatorRequest}', [UserInnovatorRequestController::class, 'update'])->name('innovator-request.update');
+
+    // مسیرهای طرح‌ها (ایده محوری)
+    Route::get('/plans/create', [PlanController::class, 'create'])->name('plans.create');
+    Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
 
     Route::get('/download/resume/{filename}', [\App\Http\Controllers\FileController::class, 'downloadResume'])->name('download.resume');
 });

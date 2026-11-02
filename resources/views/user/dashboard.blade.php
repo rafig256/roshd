@@ -113,7 +113,7 @@
                 @endif
             </div>
 
-            {{-- 2. My ideas --}}
+{{-- 2. My ideas --}}
             <div class="group flex flex-col p-7 bg-white rounded-2xl border border-slate-200
                         hover:border-fuchsia-200 hover:shadow-xl hover:shadow-fuchsia-500/10 hover:-translate-y-1 transition-all">
                 <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-pink-600 text-white flex items-center justify-center shadow-lg shadow-fuchsia-500/30">
@@ -122,19 +122,24 @@
                         <path d="M9 12l2 2 4-4M7 4h10a2 2 0 012 2v14l-3-2-4 2-4-2-3 2V6a2 2 0 012-2z"/>
                     </svg>
                 </div>
-                <h2 class="mt-5 text-lg font-bold text-slate-900">ایده‌های من</h2>
+                <h2 class="mt-5 text-lg font-bold text-slate-900">ثبت طرح (ایده محوری)</h2>
                 <p class="mt-2 text-sm leading-7 text-slate-600">
-                    طرح‌ها و ایده‌هایی که ثبت کرده‌اید را مشاهده کنید و وضعیت بررسی هر کدام را پیگیری نمایید.
+                    اگر یک ایده نوآورانه دارید، طرح خود را ثبت کنید تا پس از بررسی، امکانات پشتیبانی و سرمایه‌گذاری در اختیار شما قرار گیرد.
                 </p>
-                <a href="#"
-                   class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-fuchsia-700 bg-fuchsia-50 rounded-xl
-                          hover:bg-fuchsia-100 transition-colors sm:self-start">
-                    مشاهده ایده‌ها
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                        <path d="M19 12H5M11 6l-6 6 6 6"/>
-                    </svg>
-                </a>
+                @if(auth()->user()->is_innovator)
+                    <a href="{{ route('user.plans.create') }}"
+                       class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
+                              bg-gradient-to-l from-fuchsia-500 to-pink-600 shadow-md shadow-fuchsia-500/30
+                              hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
+                        ثبت طرح جدید
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                            <path d="M12 5v14M5 12h14"/>
+                        </svg>
+                    </a>
+                @else
+                    <p class="mt-6 text-sm text-slate-500">برای ثبت ایده محوری، ابتدا باید درخواست فناوری شما تأیید شود.</p>
+                @endif
             </div>
 
             {{-- 3. Edit profile --}}
