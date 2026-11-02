@@ -1,3 +1,4 @@
+<!-- TEST UPDATE: {{ time() }} -->
 @extends('admin.layouts.app')
 
 @section('title', 'جزئیات درخواست فناوری')
@@ -10,16 +11,8 @@
         'approved' => ['label' => 'تأیید شده',       'class' => 'bg-emerald-100 text-emerald-800 border-emerald-200', 'dot' => 'bg-emerald-500'],
         'rejected' => ['label' => 'رد شده',          'class' => 'bg-red-100 text-red-800 border-red-200',             'dot' => 'bg-red-500'],
     ];
-    $st = $statusMap[$innovatorRequest->status] ?? [
-        'label' => $innovatorRequest->status ?: 'نامشخص',
-        'class' => 'bg-slate-100 text-slate-700 border-slate-200',
-        'dot'   => 'bg-slate-400',
-    ];
-
-    $entryDate = $innovatorRequest->entry_date
-        ? \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($innovatorRequest->entry_date))->format('Y/m/d')
-        : null;
-
+    $st = $statusMap[$innovatorRequest->status] ?? ['label' => 'نامشخص', 'class' => 'bg-slate-100 text-slate-700 border-slate-200', 'dot' => 'bg-slate-400'];
+    $entryDate = $innovatorRequest->entry_date ? \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($innovatorRequest->entry_date))->format('Y/m/d') : null;
     $user = $innovatorRequest->user;
 @endphp
 
@@ -33,9 +26,7 @@
         </div>
     @endif
     @if (session('error'))
-        <div class="mb-6 px-4 py-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg">
-            {{ session('error') }}
-        </div>
+        <div class="mb-6 px-4 py-3 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg">{{ session('error') }}</div>
     @endif
 
     {{-- Header --}}
@@ -45,13 +36,10 @@
             <p class="mt-1 text-sm text-slate-500">
                 شناسه‌ی درخواست: <span class="font-semibold text-slate-700">#{{ $innovatorRequest->id }}</span>
                 @if ($innovatorRequest->created_at)
-                    <span class="mx-1 text-slate-300">|</span>
-                    ثبت‌شده در
-                    <span dir="ltr" class="inline-block">{{ \Morilog\Jalali\Jalalian::fromCarbon($innovatorRequest->created_at)->format('Y/m/d H:i') }}</span>
+                    <span class="mx-1 text-slate-300">|</span> ثبت‌شده در <span dir="ltr" class="inline-block">{{ \Morilog\Jalali\Jalalian::fromCarbon($innovatorRequest->created_at)->format('Y/m/d H:i') }}</span>
                 @endif
             </p>
         </div>
-
         <span class="inline-flex items-center gap-2 self-start px-4 py-1.5 text-sm font-bold rounded-full border {{ $st['class'] }}">
             <span class="w-2 h-2 rounded-full {{ $st['dot'] }}"></span>
             {{ $st['label'] }}
@@ -59,7 +47,6 @@
     </div>
 
     <div class="space-y-6">
-
         {{-- User info --}}
         <section class="rounded-xl border border-slate-200 bg-white">
             <div class="px-6 py-4 border-b border-slate-200 flex items-center gap-3">
@@ -105,25 +92,19 @@
                     <div>
                         <dt class="text-xs text-slate-400">تاریخ ورود به پارک</dt>
                         <dd class="mt-1 text-sm font-medium text-slate-800">
-                            @if ($entryDate)
-                                <span dir="ltr" class="inline-block">{{ $entryDate }}</span>
-                            @else
-                                <span class="text-slate-400">ثبت نشده</span>
-                            @endif
+                            @if ($entryDate) <span dir="ltr" class="inline-block">{{ $entryDate }}</span>
+                            @else <span class="text-slate-400">ثبت نشده</span> @endif
                         </dd>
                     </div>
                 </div>
-
                 <div>
                     <dt class="text-xs text-slate-400">معرفی خود</dt>
                     <dd class="mt-2 p-4 text-sm leading-8 text-slate-700 bg-slate-50 rounded-lg border border-slate-100 whitespace-pre-line">{{ $innovatorRequest->bio ?: 'ثبت نشده' }}</dd>
                 </div>
-
                 <div>
                     <dt class="text-xs text-slate-400">انگیزه از فناور شدن</dt>
                     <dd class="mt-2 p-4 text-sm leading-8 text-slate-700 bg-slate-50 rounded-lg border border-slate-100 whitespace-pre-line">{{ $innovatorRequest->motivation ?: 'ثبت نشده' }}</dd>
                 </div>
-
                 @if ($innovatorRequest->status === 'rejected' && !empty($innovatorRequest->rejection_reason))
                     <div>
                         <dt class="text-xs text-red-500">دلیل رد درخواست</dt>
@@ -143,9 +124,7 @@
             </div>
             <div class="p-6">
                 @if (!is_null($innovatorRequest->resume_file_path))
-                    <a href="{{ route('admin.download.resume', basename($innovatorRequest->resume_file_path)) }}"
-                       class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg
-                              hover:bg-indigo-100 transition-colors">
+                    <a href="{{ route('admin.download.resume', basename($innovatorRequest->resume_file_path)) }}" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 4v12M7 11l5 5 5-5M4 20h16"/></svg>
                         دانلود رزومه
                     </a>
@@ -160,21 +139,16 @@
             <section class="rounded-xl border border-slate-200 bg-slate-50 p-6">
                 <h3 class="text-sm font-semibold text-slate-700 mb-4">تعیین وضعیت درخواست</h3>
                 <div class="flex flex-col sm:flex-row gap-3">
-
-                    <form method="POST" action="{{ route('admin.innovator-requests.approve', $innovatorRequest->id) }}"
-                          onsubmit="return confirm('آیا از تأیید این درخواست مطمئن هستید؟');">
+                    <form method="POST" action="{{ route('admin.innovator-requests.approve', $innovatorRequest->id) }}" onsubmit="return confirm('آیا از تأیید این درخواست مطمئن هستید؟');">
                         @csrf
-                        <button type="submit"
-                                class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-emerald-600 rounded-lg
-                                       hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors">
+                        <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
                             تأیید درخواست
                         </button>
                     </form>
 
-                    <button type="button" id="open-reject-modal"
-                            class="inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-red-600 rounded-lg
-                                   hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
+                    {{-- دکمه باز کردن مودال با جاوااسکریپت خالص --}}
+                    <button type="button" onclick="document.getElementById('rejectModal').showModal()" class="inline-flex items-center justify-center gap-2 px-6 py-2.5 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
                         رد درخواست
                     </button>
@@ -182,10 +156,8 @@
             </section>
         @endif
 
-        {{-- Back --}}
         <div>
-            <a href="{{ route('admin.innovator-requests.index') }}"
-               class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
+            <a href="{{ route('admin.innovator-requests.index') }}" class="inline-flex items-center gap-2 px-5 py-2.5 text-sm font-semibold text-slate-600 border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
                 بازگشت به لیست
             </a>
@@ -193,72 +165,52 @@
     </div>
 </div>
 
-{{-- Reject modal (native <dialog>) --}}
+{{-- Reject Modal (Native HTML5 Dialog) --}}
 @if ($innovatorRequest->status === 'pending')
-    <dialog id="reject-modal"
-            class="w-full max-w-lg p-0 rounded-2xl shadow-2xl backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm"
-            style="margin:auto">
-        <form method="POST" action="{{ route('admin.innovator-requests.reject', $innovatorRequest->id) }}" dir="rtl" class="font-sans">
+    <dialog id="rejectModal" class="backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm w-full max-w-lg p-0 rounded-2xl shadow-2xl open:flex open:flex-col" dir="rtl">
+        <form method="POST" action="{{ route('admin.innovator-requests.reject', $innovatorRequest->id) }}" class="flex flex-col h-full bg-white">
             @csrf
-
+            {{-- Header --}}
             <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
-                <h3 class="text-base font-bold text-slate-800">رد درخواست فناوری</h3>
-                <button type="button" id="close-reject-modal" aria-label="بستن"
-                        class="p-1.5 text-slate-400 rounded-lg hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                <h3 class="text-base font-bold text-slate-800">دلیل رد درخواست</h3>
+                <button type="button" onclick="document.getElementById('rejectModal').close()" class="p-1.5 text-slate-400 rounded-lg hover:bg-slate-100 hover:text-slate-600 transition-colors">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
                 </button>
             </div>
-
-            <div class="p-6">
+            
+            {{-- Body --}}
+            <div class="p-6 flex-1">
                 <label for="rejection_reason" class="block mb-2 text-sm font-medium text-slate-700">
                     دلیل رد درخواست <span class="text-red-500">*</span>
                 </label>
+                {{-- textarea با عرض کامل --}}
                 <textarea id="rejection_reason" name="rejection_reason" rows="5" required
-                          placeholder="دلیل رد درخواست را برای متقاضی بنویسید..."
-                          class="w-full px-4 py-3 text-sm leading-7 rounded-lg border bg-slate-50 resize-y
-                                 focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition
-                                 @error('rejection_reason') border-red-400 @else border-slate-300 @enderror">{{ old('rejection_reason') }}</textarea>
+                          placeholder="لطفاً دلیل رد درخواست را وارد کنید..."
+                          class="w-full px-4 py-3 text-sm leading-7 rounded-lg border bg-slate-50 resize-y focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition @error('rejection_reason') border-red-400 @else border-slate-300 @enderror">{{ old('rejection_reason') }}</textarea>
                 @error('rejection_reason')
                     <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
                 @enderror
             </div>
 
+            {{-- Footer --}}
             <div class="px-6 py-4 bg-slate-50 rounded-b-2xl flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
-                <button type="button" id="cancel-reject-modal"
-                        class="px-5 py-2.5 text-sm font-semibold text-slate-600 border border-slate-300 rounded-lg hover:bg-white transition-colors">
+                <button type="button" onclick="document.getElementById('rejectModal').close()" class="px-5 py-2.5 text-sm font-semibold text-slate-600 border border-slate-300 rounded-lg hover:bg-white transition-colors">
                     انصراف
                 </button>
-                <button type="submit"
-                        class="px-5 py-2.5 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
-                    ثبت رد درخواست
+                <button type="submit" class="px-5 py-2.5 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                    ثبت و رد درخواست
                 </button>
             </div>
         </form>
     </dialog>
 
-    @push('scripts')
-    <script>
-        (function () {
-            const modal = document.getElementById('reject-modal');
-            if (!modal) return;
-
-            document.getElementById('open-reject-modal')?.addEventListener('click', () => modal.showModal());
-            document.getElementById('close-reject-modal')?.addEventListener('click', () => modal.close());
-            document.getElementById('cancel-reject-modal')?.addEventListener('click', () => modal.close());
-
-            // کلیک روی پس‌زمینه، مودال را ببندد
-            modal.addEventListener('click', (e) => {
-                const r = modal.getBoundingClientRect();
-                const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-                if (!inside) modal.close();
+    {{-- اسکریپت ساده برای باز نگه داشتن مودال در صورت خطای اعتبارسنجی --}}
+    @if ($errors->has('rejection_reason'))
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                document.getElementById('rejectModal').showModal();
             });
-
-            // اگر اعتبارسنجی دلیل رد شکست خورد، مودال دوباره باز شود
-            @if ($errors->has('rejection_reason'))
-                modal.showModal();
-            @endif
-        })();
-    </script>
-    @endpush
+        </script>
+    @endif
 @endif
 @endsection

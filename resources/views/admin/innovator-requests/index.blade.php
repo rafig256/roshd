@@ -15,10 +15,7 @@
         {{-- Success message --}}
         @if (session('success'))
             <div class="mb-6 flex items-center gap-2 px-4 py-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg">
-                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <path d="M5 13l4 4L19 7"/>
-                </svg>
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
                 {{ session('success') }}
             </div>
         @endif
@@ -39,8 +36,7 @@
                     @forelse ($requests as $request)
                         <tr class="hover:bg-slate-50 transition-colors">
                             <td class="px-6 py-4 text-slate-800">
-                                <a href="{{ route('admin.innovator-requests.show', $request->id) }}"
-                                   class="font-medium hover:text-indigo-600 hover:underline transition-colors">
+                                <a href="{{ route('admin.innovator-requests.show', $request->id) }}" class="font-medium hover:text-indigo-600 hover:underline transition-colors">
                                     {{ $request->user->name }} {{ $request->user->family }}
                                 </a>
                                 <div class="text-xs text-slate-500" dir="ltr">{{ $request->user->national_code }}</div>
@@ -65,31 +61,20 @@
                                     <div class="flex items-center gap-2">
                                         <form action="{{ route('admin.innovator-requests.approve', $request->id) }}" method="POST" class="inline-block">
                                             @csrf
-                                            <button type="submit"
-                                                    onclick="return confirm('آیا از تأیید این درخواست مطمئن هستید؟')"
-                                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700 transition-colors">
-                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                    <path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/>
-                                                </svg>
+                                            <button type="submit" onclick="return confirm('آیا از تأیید این درخواست مطمئن هستید؟')" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700 transition-colors">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                                 تأیید
                                             </button>
                                         </form>
-                                        <button type="button"
-                                                onclick="openRejectModal({{ $request->id }})"
-                                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors">
-                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                                <path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/>
-                                            </svg>
+                                        {{-- دکمه باز کردن مودال رد --}}
+                                        <button type="button" onclick="openRejectModal({{ $request->id }})" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors">
+                                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 18L18 6M6 6l12 12" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                             رد
                                         </button>
                                     </div>
                                 @elseif ($request->status === 'rejected')
-                                    <button type="button"
-                                            onclick="showRejectionReason('{{ $request->rejection_reason }}')"
-                                            class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 transition-colors">
-                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                            <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
-                                        </svg>
+                                    <button type="button" onclick="showReasonModal('{{ addslashes($request->rejection_reason) }}')" class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                         دلیل رد
                                     </button>
                                 @endif
@@ -108,144 +93,75 @@
         <div class="mt-6">
             {{ $requests->links() }}
         </div>
-
     </div>
 
-    {{-- Reject Modal --}}
-    <div id="rejectModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-20 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-white rounded-xl text-right overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-6 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 text-red-600 sm:mx-0 sm:h-10 sm:w-10">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
-                            <h3 class="text-lg leading-6 font-medium text-slate-900" id="modal-title">رد درخواست</h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-slate-500">دلیل رد درخواست را وارد کنید:</p>
-                                <textarea id="rejectionReason" class="mt-2 w-full px-4 py-2 text-sm border border-slate-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 focus:outline-none" rows="4" placeholder="دلیل رد..."></textarea>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-50 px-6 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button"
-                            onclick="submitReject()"
-                            class="w-full inline-flex justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-white bg-red-600 hover:bg-red-700 transition-colors sm:ml-3 sm:w-auto sm:px-5">
-                        تایید رد
-                    </button>
-                    <button type="button"
-                            onclick="closeRejectModal()"
-                            class="mt-3 w-full inline-flex justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 transition-colors sm:mt-0 sm:w-auto sm:px-5">
-                        انصراف
-                    </button>
-                </div>
+    {{-- Reject Modal (Native HTML5 Dialog) --}}
+    <dialog id="rejectModal" class="backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm w-full max-w-lg p-0 rounded-2xl shadow-2xl open:flex open:flex-col" dir="rtl">
+        <form id="rejectForm" method="POST" action="" class="flex flex-col h-full bg-white">
+            @csrf
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-800">رد درخواست</h3>
+                <button type="button" onclick="document.getElementById('rejectModal').close()" class="p-1.5 text-slate-400 rounded-lg hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+            <div class="p-6 flex-1">
+                <label for="rejection_reason" class="block mb-2 text-sm font-medium text-slate-700">
+                    دلیل رد درخواست <span class="text-red-500">*</span>
+                </label>
+                <textarea id="rejection_reason" name="rejection_reason" rows="5" required placeholder="لطفاً دلیل رد درخواست را وارد کنید..."
+                          class="w-full px-4 py-3 text-sm leading-7 rounded-lg border bg-slate-50 resize-y focus:bg-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500 transition border-slate-300"></textarea>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 rounded-b-2xl flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                <button type="button" onclick="document.getElementById('rejectModal').close()" class="px-5 py-2.5 text-sm font-semibold text-slate-600 border border-slate-300 rounded-lg hover:bg-white transition-colors">
+                    انصراف
+                </button>
+                <button type="submit" class="px-5 py-2.5 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors">
+                    ثبت و رد درخواست
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    {{-- Reason Modal (Native HTML5 Dialog) --}}
+    <dialog id="reasonModal" class="backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm w-full max-w-md p-0 rounded-2xl shadow-2xl open:flex open:flex-col" dir="rtl">
+        <div class="bg-white rounded-2xl overflow-hidden flex flex-col">
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-800">دلیل رد درخواست</h3>
+                <button type="button" onclick="document.getElementById('reasonModal').close()" class="p-1.5 text-slate-400 rounded-lg hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+            </div>
+            <div class="p-6">
+                <p id="reasonText" class="text-sm leading-7 text-slate-700 whitespace-pre-line"></p>
+            </div>
+            <div class="px-6 py-4 bg-slate-50 flex justify-end">
+                <button type="button" onclick="document.getElementById('reasonModal').close()" class="px-5 py-2.5 text-sm font-semibold text-slate-600 border border-slate-300 rounded-lg hover:bg-white transition-colors">
+                    بستن
+                </button>
             </div>
         </div>
-    </div>
-
-    {{-- Rejection Reason Modal --}}
-    <div id="reasonModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="reason-modal-title" role="dialog" aria-modal="true">
-        <div class="flex items-center justify-center min-h-screen px-4 pt-20 pb-20 text-center sm:block sm:p-0">
-            <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true"></div>
-            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-            <div class="inline-block align-bottom bg-white rounded-xl text-right overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-                <div class="bg-white px-6 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <div class="sm:flex sm:items-start">
-                        <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-slate-100 text-slate-600 sm:mx-0 sm:h-10 sm:w-10">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                                <path d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" stroke-linecap="round" stroke-linejoin="round"/>
-                            </svg>
-                        </div>
-                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-right">
-                            <h3 class="text-lg leading-6 font-medium text-slate-900" id="reason-modal-title">دلیل رد درخواست</h3>
-                            <div class="mt-2">
-                                <p class="text-sm text-slate-500 whitespace-pre-wrap" id="rejectionReasonText"></p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-slate-50 px-6 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="button"
-                            onclick="closeReasonModal()"
-                            class="w-full inline-flex justify-center rounded-lg px-4 py-2.5 text-sm font-semibold text-slate-700 bg-white border border-slate-300 hover:bg-slate-50 transition-colors sm:ml-3 sm:w-auto sm:px-5">
-                        بستن
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    </dialog>
 
     <script>
-        let currentRequestId = null;
-
         function openRejectModal(requestId) {
-            currentRequestId = requestId;
-            document.getElementById('rejectionReason').value = '';
-            document.getElementById('rejectModal').classList.remove('hidden');
-        }
-
-        function closeRejectModal() {
-            currentRequestId = null;
-            document.getElementById('rejectModal').classList.add('hidden');
-        }
-
-        function submitReject() {
-            const reason = document.getElementById('rejectionReason').value.trim();
-            if (!reason) {
-                alert('لطفاً دلیل رد را وارد کنید.');
-                return;
-            }
-
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `{{ route('admin.innovator-requests.reject', ':id') }}`.replace(':id', currentRequestId);
+            // تنظیم اکشن فرم برای درخواست انتخاب شده
+            const form = document.getElementById('rejectForm');
+            form.action = `{{ route('admin.innovator-requests.reject', ':id') }}`.replace(':id', requestId);
             
-            const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
-            const csrfInput = document.createElement('input');
-            csrfInput.type = 'hidden';
-            csrfInput.name = '_token';
-            csrfInput.value = csrfToken;
-            form.appendChild(csrfInput);
-
-            const reasonInput = document.createElement('input');
-            reasonInput.type = 'hidden';
-            reasonInput.name = 'rejection_reason';
-            reasonInput.value = reason;
-            form.appendChild(reasonInput);
-
-            document.body.appendChild(form);
-            form.submit();
+            // پاک کردن مقدار قبلی
+            document.getElementById('rejection_reason').value = '';
+            
+            // باز کردن مودال
+            document.getElementById('rejectModal').showModal();
         }
 
-        function showRejectionReason(reason) {
-            document.getElementById('rejectionReasonText').textContent = reason;
-            document.getElementById('reasonModal').classList.remove('hidden');
+        function showReasonModal(reason) {
+            // قرار دادن دلیل رد در مودال
+            document.getElementById('reasonText').textContent = reason;
+            
+            // باز کردن مودال
+            document.getElementById('reasonModal').showModal();
         }
-
-        function closeReasonModal() {
-            document.getElementById('reasonModal').classList.add('hidden');
-        }
-
-        // Close modals on backdrop click
-        document.getElementById('rejectModal').addEventListener('click', function(e) {
-            if (e.target === this) closeRejectModal();
-        });
-        document.getElementById('reasonModal').addEventListener('click', function(e) {
-            if (e.target === this) closeReasonModal();
-        });
-
-        // Close modals on Escape key
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeRejectModal();
-                closeReasonModal();
-            }
-        });
     </script>
 @endsection
