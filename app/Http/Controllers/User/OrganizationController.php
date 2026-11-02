@@ -83,4 +83,105 @@ class OrganizationController extends Controller
         return redirect()->route('user.dashboard')
             ->with('success', 'تیم شما با موفقیت ایجاد شد.');
     }
+
+    public function show(Organization $organization)
+    {
+        if ($organization->representative_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $organization->load([
+            'activityCategory',
+            'members' => function ($query) {
+                $query->where('is_active', true)->with('user');
+            },
+            'joinRequests' => function ($query) {
+                $query->where('status', 'pending')->with('user');
+            }
+        ]);
+
+        $members = $organization->members;
+        $joinRequests = $organization->joinRequests;
+
+        return view('user.organizations.show', compact('organization', 'members', 'joinRequests'));
+    }
+
+    public function edit(Organization $organization)
+    {
+        if ($organization->representative_id !== auth()->id()) {
+            abort(403);
+        }
+
+        return view('user.organizations.edit', compact('organization'));
+    }
+
+    public function update(Request $request, Organization $organization)
+    {
+        if ($organization->representative_id !== auth()->id()) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'name'        => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'logo'        => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
+        ]);
+
+        if ($request->hasFile('logo')) {
+            if ($organization->logo_path && Storage::disk('public')->exists($organization->logo_path)) {
+                Storage::disk('public')->delete($organization->logo_path);
+            }
+            $organization->logo_path = $request->file('logo')->store('logos', 'public');
+        }
+
+        $organization->update([
+            'name'        => $validated['name'],
+            'description' => $validated['description'],
+        ]);
+
+        return back()->with('success', 'اطلاعات تیم با موفقیت به‌روزرسانی شد.');
+    }
+
+    public function updateMemberPosition(Request $request, Organization $organization, OrganizationMember $member)
+    {
+        if ($organization->representative_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($member->organization_id !== $organization->id) {
+            abort(403);
+        }
+
+        $validated = $request->validate([
+            'position' => 'required|string|max:255',
+        ]);
+
+        $member->update([
+            'position' => $validated['position'],
+        ]);
+
+        return back()->with('success', 'سمت عضو با موفقیت به‌روزرسانی شد.');
+    }
+
+    public function removeMember(Organization $organization, OrganizationMember $member)
+    {
+        if ($organization->representative_id !== auth()->id()) {
+            abort(403);
+        }
+
+        if ($member->organization_id !== $organization->id) {
+            abort(403);
+        }
+
+        if ($member->user_id === auth()->id()) {
+            return back()->with('error', 'شما نمی‌توانید نمایده تیم (خودتان) را حذف کنید.');
+        }
+
+        $member->update([
+            'is_active' => false,
+            'left_at'   => now(),
+        ]);
+
+        return back()->with('success', 'عضو از تیم حذف شد.');
+    }
 }

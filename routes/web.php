@@ -18,6 +18,7 @@ use App\Http\Controllers\User\DashboardController as UserDashboardController;
 use App\Http\Controllers\User\InnovatorRequestController as UserInnovatorRequestController;
 use App\Http\Controllers\User\PlanController as UserPlanController; // 👈 Alias اضافه شد
 use App\Http\Controllers\User\OrganizationController;
+use App\Http\Controllers\User\OrganizationJoinRequestController;
 
 // ==========================================
 // ۱. مسیرهای عمومی سایت (بدون نیاز به لاگین)
@@ -58,6 +59,13 @@ Route::middleware('auth')->name('user.')->group(function () {
     // مسیرهای سازمان/تیم (کاربر عادی)
     Route::get('/organizations/create', [OrganizationController::class, 'create'])->name('organizations.create');
     Route::post('/organizations', [OrganizationController::class, 'store'])->name('organizations.store');
+    Route::get('/organizations/{organization}', [OrganizationController::class, 'show'])->name('organizations.show');
+    Route::get('/organizations/{organization}/edit', [OrganizationController::class, 'edit'])->name('organizations.edit');
+    Route::put('/organizations/{organization}', [OrganizationController::class, 'update'])->name('organizations.update');
+    Route::put('/organizations/{organization}/members/{member}', [OrganizationController::class, 'updateMemberPosition'])->name('organizations.members.update');
+    Route::delete('/organizations/{organization}/members/{member}', [OrganizationController::class, 'removeMember'])->name('organizations.members.destroy');
+    Route::post('/organizations/{organization}/join-requests/{joinRequest}/approve', [OrganizationJoinRequestController::class, 'approve'])->name('organizations.join-requests.approve');
+    Route::post('/organizations/{organization}/join-requests/{joinRequest}/reject', [OrganizationJoinRequestController::class, 'reject'])->name('organizations.join-requests.reject');
 
     Route::get('/download/resume/{filename}', [FileController::class, 'downloadResume'])->name('download.resume');
 });

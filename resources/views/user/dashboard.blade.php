@@ -292,8 +292,8 @@
     @if ($team)
         {{-- حالت ۳: کاربر تیم دارد --}}
         <div class="mt-3 flex items-center gap-3">
-            @if (!empty($team->logo))
-                <img src="{{ Storage::url($team->logo) }}" alt="{{ $team->name }}"
+            @if (!empty($team->logo_path))
+                <img src="{{ Storage::url($team->logo_path) }}" alt="{{ $team->name }}"
                      class="w-11 h-11 rounded-xl object-cover border border-slate-200">
             @endif
             <div class="min-w-0">
@@ -306,9 +306,9 @@
         <p class="mt-3 text-sm leading-7 text-slate-600">
             اطلاعات واحد فناور، اعضا و فعالیت‌های خود را از اینجا مدیریت کنید.
         </p>
-        <a href="#"
+<a href="{{ route('user.organizations.show', $team->id) }}"
            class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-cyan-700 bg-cyan-50 rounded-xl
-                  hover:bg-cyan-100 transition-colors sm:self-start">
+                 hover:bg-cyan-100 transition-colors sm:self-start">
             مدیریت تیم
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                  stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
