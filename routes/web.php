@@ -50,6 +50,8 @@ Route::middleware('auth')->name('user.')->group(function () {
     // مسیرهای طرح‌ها (ایده محوری)
     Route::get('/plans/create', [PlanController::class, 'create'])->name('plans.create');
     Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
+    Route::get('/plans/{plan}/edit', [PlanController::class, 'edit'])->name('plans.edit');
+    Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
 
     Route::get('/download/resume/{filename}', [\App\Http\Controllers\FileController::class, 'downloadResume'])->name('download.resume');
 });

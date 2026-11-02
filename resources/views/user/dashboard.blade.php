@@ -97,50 +97,136 @@
                         
                         @if($latestRequest->status === 'approved')
                             <p class="text-xs text-emerald-600">شما اکنون به‌عنوان فناور عضو هستید.</p>
-                            
-                            {{-- دکمه ویرایش فقط برای درخواست‌های تایید شده --}}
-                            <a href="{{ route('user.innovator-request.edit', $latestRequest->id) }}"
-                               class="mt-4 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 rounded-xl
-                                      hover:bg-indigo-100 hover:border-indigo-300 transition-colors sm:self-start">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                    <path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/>
-                                </svg>
-                                ویرایش درخواست
-                            </a>
                         @endif
                     </div>
                 @endif
             </div>
 
-{{-- 2. My ideas --}}
-            <div class="group flex flex-col p-7 bg-white rounded-2xl border border-slate-200
-                        hover:border-fuchsia-200 hover:shadow-xl hover:shadow-fuchsia-500/10 hover:-translate-y-1 transition-all">
-                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-pink-600 text-white flex items-center justify-center shadow-lg shadow-fuchsia-500/30">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8"
-                         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                        <path d="M9 12l2 2 4-4M7 4h10a2 2 0 012 2v14l-3-2-4 2-4-2-3 2V6a2 2 0 012-2z"/>
-                    </svg>
-                </div>
-                <h2 class="mt-5 text-lg font-bold text-slate-900">ثبت طرح (ایده محوری)</h2>
-                <p class="mt-2 text-sm leading-7 text-slate-600">
-                    اگر یک ایده نوآورانه دارید، طرح خود را ثبت کنید تا پس از بررسی، امکانات پشتیبانی و سرمایه‌گذاری در اختیار شما قرار گیرد.
+
+{{-- 2. My Plan --}}
+<div class="group flex flex-col p-7 bg-white rounded-2xl border border-slate-200
+            hover:border-fuchsia-200 hover:shadow-xl hover:shadow-fuchsia-500/10 hover:-translate-y-1 transition-all">
+
+    {{-- آیکون --}}
+    <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-fuchsia-500 to-pink-600 text-white flex items-center justify-center shadow-lg shadow-fuchsia-500/30">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+            <path d="M9 12l2 2 4-4M7 4h10a2 2 0 012 2v14l-3-2-4 2-4-2-3 2V6a2 2 0 012-2z"/>
+        </svg>
+    </div>
+
+    @if(!auth()->user()->is_innovator)
+
+        {{-- کاربر هنوز فناور نیست --}}
+        <h2 class="mt-5 text-lg font-bold text-slate-900">ثبت طرح (ایده محوری)</h2>
+
+        <p class="mt-2 text-sm leading-7 text-slate-600">
+            برای ثبت ایده محوری، ابتدا باید درخواست فناوری شما تأیید شود.
+        </p>
+
+    @elseif(!$latestPlan)
+
+        {{-- حالت ۱: هنوز طرحی ثبت نکرده --}}
+        <h2 class="mt-5 text-lg font-bold text-slate-900">ثبت طرح (ایده محوری)</h2>
+
+        <p class="mt-2 text-sm leading-7 text-slate-600">
+            اگر یک ایده نوآورانه دارید، طرح خود را ثبت کنید تا پس از بررسی، امکانات پشتیبانی و سرمایه‌گذاری در اختیار شما قرار گیرد.
+        </p>
+
+        <a href="{{ route('user.plans.create') }}"
+           class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
+                  bg-gradient-to-l from-fuchsia-500 to-pink-600 shadow-md shadow-fuchsia-500/30
+                  hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
+            ثبت طرح جدید
+        </a>
+
+    @else
+
+        {{-- مشخصات مشترک طرح --}}
+        <h2 class="mt-5 text-lg font-bold text-slate-900">طرح (ایده) من</h2>
+
+        <div class="mt-4 space-y-3">
+
+            <p class="text-sm text-slate-600">
+                عنوان طرح:
+                <span class="font-semibold text-slate-800 ml-2">
+                    {{ $latestPlan->title }}
+                </span>
+            </p>
+
+            <p class="text-xs text-slate-500">
+                تاریخ ثبت:
+                {{ \Morilog\Jalali\Jalalian::fromCarbon($latestPlan->created_at)->format('Y/m/d') }}
+            </p>
+
+            {{-- حالت ۲: در انتظار بررسی --}}
+            @if($latestPlan->status === \App\Enums\PlanStatus::Pending)
+
+                <p class="text-sm text-slate-600">
+                    وضعیت طرح:
+                    <span class="text-yellow-600 font-bold inline-flex px-2.5 py-1 rounded-full bg-yellow-50 text-xs">
+                        در حال بررسی
+                    </span>
                 </p>
-                @if(auth()->user()->is_innovator)
-                    <a href="{{ route('user.plans.create') }}"
-                       class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
-                              bg-gradient-to-l from-fuchsia-500 to-pink-600 shadow-md shadow-fuchsia-500/30
-                              hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
-                        ثبت طرح جدید
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
-                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                            <path d="M12 5v14M5 12h14"/>
-                        </svg>
-                    </a>
-                @else
-                    <p class="mt-6 text-sm text-slate-500">برای ثبت ایده محوری، ابتدا باید درخواست فناوری شما تأیید شود.</p>
+
+                <p class="text-xs text-amber-600 mt-2">
+                    طرح شما توسط کارشناسان در حال بررسی است. لطفاً منتظر اعلام نتیجه باشید.
+                </p>
+
+            {{-- حالت ۳: تأیید شده --}}
+            @elseif($latestPlan->status === \App\Enums\PlanStatus::Approved)
+
+                <p class="text-sm text-slate-600">
+                    وضعیت طرح:
+                    <span class="text-green-600 font-bold inline-flex px-2.5 py-1 rounded-full bg-green-50 text-xs">{{$latestPlan->status->label()}}</span>
+                </p>
+
+                <p class="text-xs text-emerald-600 mt-2">
+                    طرح شما تأیید شده است. هر فناور فقط مجاز به داشتن یک طرح تأیید شده است.
+                </p>
+
+            {{-- حالت ۴: رد شده --}}
+            @elseif($latestPlan->status === \App\Enums\PlanStatus::Rejected)
+
+                <p class="text-sm text-slate-600">
+                    وضعیت طرح:
+                    <span class="text-red-600 font-bold inline-flex px-2.5 py-1 rounded-full bg-red-50 text-xs">{{ $latestPlan->status->label() }}</span>
+                </p>
+
+                @if($latestPlan->rejection_reason)
+                    <p class="text-sm text-red-700 bg-red-50 p-3 rounded-lg border border-red-100 whitespace-pre-line">
+                        <strong>دلیل رد:</strong>
+                        {{ $latestPlan->rejection_reason }}
+                    </p>
                 @endif
-            </div>
+
+                <a href="{{ route('user.plans.edit', $latestPlan->id) }}"
+                   class="mt-4 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-fuchsia-700 bg-fuchsia-50 border border-fuchsia-200 rounded-xl
+                          hover:bg-fuchsia-100 hover:border-fuchsia-300 transition-colors sm:self-start">
+                    ویرایش طرح
+                </a>
+            @elseif($latestPlan->status === \App\Enums\PlanStatus::Archived)
+
+                <p class="text-sm text-gray-600">
+                    وضعیت طرح:
+                    <span class="text-gray-600 bg-gray-100 px-2.5 py-1 rounded-full text-xs">
+                        {{ $latestPlan->status->label() }}
+                    </span>
+                </p>
+
+            @else
+
+                {{-- وضعیت ناشناخته --}}
+                <p class="text-sm text-slate-500">
+                    وضعیت طرح مشخص نیست. لطفاً با پشتیبانی تماس بگیرید.
+                </p>
+
+            @endif
+
+        </div>
+    @endif
+
+</div>
+
 
             {{-- 3. Edit profile --}}
             <div class="group flex flex-col p-7 bg-white rounded-2xl border border-slate-200
