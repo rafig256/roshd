@@ -38,7 +38,7 @@ class Plan extends Model
 
     public function innovator(): BelongsTo
     {
-        return $this->belongsTo(Innovator::class, 'innovator_id');
+            return $this->belongsTo(User::class, 'innovator_id');
     }
 
     public function activityCategory(): BelongsTo

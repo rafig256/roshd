@@ -7,15 +7,16 @@ use App\Http\Controllers\Admin\DashboardController as AdminDashboardController;
 use App\Http\Controllers\Admin\Auth\LoginController as AdminLoginController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\InnovatorRequestController as AdminInnovatorRequestController; // 👈 اینجا Alias دادیم
+use App\Http\Controllers\Admin\InnovatorRequestController as AdminInnovatorRequestController;
+use App\Http\Controllers\Admin\PlanController as AdminPlanController; // 👈 Alias اضافه شد
 use App\Http\Controllers\FileController;
 
 // --- کنترلرهای کاربران عادی (User) ---
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController as UserLoginController;
 use App\Http\Controllers\User\DashboardController as UserDashboardController;
-use App\Http\Controllers\User\InnovatorRequestController as UserInnovatorRequestController; // 👈 اینجا هم Alias دادیم
-use App\Http\Controllers\User\PlanController;
+use App\Http\Controllers\User\InnovatorRequestController as UserInnovatorRequestController;
+use App\Http\Controllers\User\PlanController as UserPlanController; // 👈 Alias اضافه شد
 
 // ==========================================
 // ۱. مسیرهای عمومی سایت (بدون نیاز به لاگین)
@@ -47,13 +48,13 @@ Route::middleware('auth')->name('user.')->group(function () {
     Route::get('/innovator-request/{innovatorRequest}/edit', [UserInnovatorRequestController::class, 'edit'])->name('innovator-request.edit');
     Route::put('/innovator-request/{innovatorRequest}', [UserInnovatorRequestController::class, 'update'])->name('innovator-request.update');
 
-    // مسیرهای طرح‌ها (ایده محوری)
-    Route::get('/plans/create', [PlanController::class, 'create'])->name('plans.create');
-    Route::post('/plans', [PlanController::class, 'store'])->name('plans.store');
-    Route::get('/plans/{plan}/edit', [PlanController::class, 'edit'])->name('plans.edit');
-    Route::put('/plans/{plan}', [PlanController::class, 'update'])->name('plans.update');
+    // مسیرهای طرح‌ها (ایده محوری - کاربر عادی)
+    Route::get('/plans/create', [UserPlanController::class, 'create'])->name('plans.create');
+    Route::post('/plans', [UserPlanController::class, 'store'])->name('plans.store');
+    Route::get('/plans/{plan}/edit', [UserPlanController::class, 'edit'])->name('plans.edit');
+    Route::put('/plans/{plan}', [UserPlanController::class, 'update'])->name('plans.update');
 
-    Route::get('/download/resume/{filename}', [\App\Http\Controllers\FileController::class, 'downloadResume'])->name('download.resume');
+    Route::get('/download/resume/{filename}', [FileController::class, 'downloadResume'])->name('download.resume');
 });
 
 // ==========================================
@@ -89,6 +90,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::get('/innovator-requests/{innovatorRequest}', [AdminInnovatorRequestController::class, 'show'])->name('innovator-requests.show');
         Route::post('/innovator-requests/{innovatorRequest}/approve', [AdminInnovatorRequestController::class, 'approve'])->name('innovator-requests.approve');
         Route::post('/innovator-requests/{innovatorRequest}/reject', [AdminInnovatorRequestController::class, 'reject'])->name('innovator-requests.reject');
+        
+        // طرح‌ها (ادمین)
+        Route::get('/plans', [AdminPlanController::class, 'index'])->name('plans.index');
+        Route::get('/plans/{plan}', [AdminPlanController::class, 'show'])->name('plans.show');
+        Route::post('/plans/{plan}/approve', [AdminPlanController::class, 'approve'])->name('plans.approve');
+        Route::post('/plans/{plan}/reject', [AdminPlanController::class, 'reject'])->name('plans.reject');
         
         // دانلود رزومه
         Route::get('/download/resume/{filename}', [FileController::class, 'downloadResume'])->name('download.resume');
