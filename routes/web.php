@@ -45,6 +45,8 @@ Route::middleware('auth')->name('user.')->group(function () {
     Route::post('/innovator-request', [UserInnovatorRequestController::class, 'store'])->name('innovator-request.store');
     Route::get('/innovator-request/{innovatorRequest}/edit', [UserInnovatorRequestController::class, 'edit'])->name('innovator-request.edit');
     Route::put('/innovator-request/{innovatorRequest}', [UserInnovatorRequestController::class, 'update'])->name('innovator-request.update');
+
+    Route::get('/download/resume/{filename}', [\App\Http\Controllers\FileController::class, 'downloadResume'])->name('download.resume');
 });
 
 // ==========================================

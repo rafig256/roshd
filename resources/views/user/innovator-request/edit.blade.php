@@ -135,9 +135,11 @@
                 <div>
                     <label for="resume_file_path" class="block mb-2 text-sm font-medium text-slate-700">فایل رزومه</label>
                     @if($innovatorRequest->resume_file_path)
-                        <p class="mb-3 text-sm text-slate-600">
-                            فایل فعلی: <strong>{{ basename($innovatorRequest->resume_file_path) }}</strong>
-                            <span class="text-slate-400 ml-2">(انتخاب فایل جدید، فایل قبلی را جایگزین می‌کند)</span>
+                        <p class="text-sm text-slate-600">
+                            فایل فعلی: 
+                            <a href="{{ route('user.download.resume', basename($innovatorRequest->resume_file_path)) }}" target="_blank" class="text-indigo-600 hover:underline font-bold">
+                                {{ basename($innovatorRequest->resume_file_path) }}
+                            </a>
                         </p>
                     @endif
                     <label for="resume_file_path"
