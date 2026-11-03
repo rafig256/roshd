@@ -78,7 +78,7 @@
                     <tr class="hover:bg-slate-50 transition-colors">
                         <td class="px-6 py-4">
                             @if($item->cover_image_path)
-                                <img src="{{ route('file.logo', basename($item->cover_image_path)) }}"
+                                <img src="{{ route('file.news-cover', basename($item->cover_image_path)) }}"
                                      alt="{{ $item->title }}"
                                      class="w-16 h-10 rounded-lg object-cover border border-slate-200">
                             @else

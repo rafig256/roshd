@@ -173,58 +173,39 @@
             </a>
         </div>
 
-        @php
-            $items = [
-                [
-                    'type'  => 'رویداد',
-                    'title' => 'رویداد معرفی استارتاپ‌ها به سرمایه‌گذاران',
-                    'date'  => '۱۵ مهر ۱۴۰۴',
-                    'text'  => 'فرصتی ویژه برای ارائه‌ی ایده و محصول خود به جمعی از سرمایه‌گذاران و مربیان حرفه‌ای.',
-                    'color' => 'from-indigo-400 to-indigo-600',
-                    'badge' => 'bg-indigo-50 text-indigo-700',
-                ],
-                [
-                    'type'  => 'خبر',
-                    'title' => 'آغاز دوره جدید شتابدهی تیم‌های فناور',
-                    'date'  => '۱۰ مهر ۱۴۰۴',
-                    'text'  => 'ثبت‌نام دوره‌ی جدید شتابدهی آغاز شد؛ تیم‌های علاقه‌مند می‌توانند درخواست خود را ثبت کنند.',
-                    'color' => 'from-fuchsia-400 to-pink-600',
-                    'badge' => 'bg-fuchsia-50 text-fuchsia-700',
-                ],
-                [
-                    'type'  => 'رویداد',
-                    'title' => 'کارگاه آموزشی مدل کسب‌وکار و اعتبارسنجی ایده',
-                    'date'  => '۴ مهر ۱۴۰۴',
-                    'text'  => 'در این کارگاه عملی، روش‌های اعتبارسنجی ایده و طراحی مدل کسب‌وکار را یاد می‌گیرید.',
-                    'color' => 'from-orange-400 to-rose-500',
-                    'badge' => 'bg-orange-50 text-orange-700',
-                ],
-            ];
-        @endphp
-
         <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            @foreach ($items as $item)
+            @foreach ($latestNews as $news)
                 <article class="group flex flex-col bg-white rounded-2xl overflow-hidden border border-slate-200 hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-1 transition-all">
 
-                    {{-- Dummy image --}}
-                    <div class="relative h-48 bg-gradient-to-br {{ $item['color'] }} flex items-center justify-center overflow-hidden">
-                        <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/15"></div>
-                        <div class="absolute -bottom-12 -left-8 w-36 h-36 rounded-full bg-white/10"></div>
-                        <svg class="relative w-14 h-14 text-white/80" fill="none" stroke="currentColor" stroke-width="1.5"
-                             stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                            <path d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM3 16l5-5 4 4 3-3 6 6M8.5 8.5h.01"/>
-                        </svg>
+                    {{-- Cover Image --}}
+                    <div class="relative h-48 overflow-hidden">
+                        @if($news->cover_image_path)
+                            <img src="{{ route('file.news-cover', basename($news->cover_image_path)) }}"
+                                 alt="{{ $news->title }}"
+                                 class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        @else
+                            <div class="absolute inset-0 bg-gradient-to-br from-indigo-500 to-fuchsia-500 flex items-center justify-center">
+                                <svg class="w-14 h-14 text-white/80" fill="none" stroke="currentColor" stroke-width="1.5"
+                                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                    <path d="M3 5a2 2 0 012-2h14a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5zM3 16l5-5 4 4 3-3 6 6M8.5 8.5h.01"/>
+                                </svg>
+                            </div>
+                        @endif
                     </div>
 
                     <div class="flex-1 flex flex-col p-6">
                         <div class="flex items-center justify-between text-xs">
-                            <span class="px-2.5 py-1 font-semibold rounded-full {{ $item['badge'] }}">{{ $item['type'] }}</span>
-                            <span class="text-slate-400">{{ $item['date'] }}</span>
+                            <span class="px-2.5 py-1 font-semibold rounded-full bg-indigo-50 text-indigo-700">خبر</span>
+                            <span class="text-slate-400">
+                                {{ \Morilog\Jalali\Jalalian::fromCarbon($news->published_at)->format('Y/m/d') }}
+                            </span>
                         </div>
-                        <h3 class="mt-4 text-base font-bold leading-7 text-slate-900 group-hover:text-indigo-600 transition-colors">
-                            {{ $item['title'] }}
+                        <h3 class="mt-4 text-base font-bold leading-7 text-slate-900 group-hover:text-indigo-600 transition-colors line-clamp-2">
+                            {{ $news->title }}
                         </h3>
-                        <p class="mt-2 text-sm leading-7 text-slate-600">{{ $item['text'] }}</p>
+                        <p class="mt-2 text-sm leading-7 text-slate-600 line-clamp-3">
+                            {{ $news->excerpt ?? Str::limit($news->body, 150) }}
+                        </p>
                         <a href="#" class="mt-5 pt-4 border-t border-slate-100 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 mt-auto">
                             ادامه مطلب
                             <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" stroke-width="2"

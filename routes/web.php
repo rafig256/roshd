@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\HomeController;
 
 // --- کنترلرهای عمومی (Public) ---
 use App\Http\Controllers\Public\OrganizationController as PublicOrganizationController;
@@ -31,9 +32,7 @@ use App\Http\Controllers\User\OrganizationJoinRequestController as UserOrganizat
 // ==========================================
 // ۱. مسیرهای عمومی سایت (بدون نیاز به لاگین)
 // ==========================================
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/register', function () {
     return view('auth.register');
@@ -46,6 +45,7 @@ Route::get('/organizations/{organization}', [PublicOrganizationController::class
 
 // مسیرهای عمومی برای فایل‌ها
 Route::get('/storage/logos/{filename}', [FileController::class, 'showLogo'])->name('file.logo');
+Route::get('/storage/news-covers/{filename}', [FileController::class, 'showNewsCover'])->name('file.news-cover');
 
 // ==========================================
 // ۲. مسیرهای کاربران عادی (فناوران)

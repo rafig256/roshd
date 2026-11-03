@@ -91,7 +91,7 @@
             <label for="cover_image" class="block mb-2 text-sm font-medium text-slate-700">تصویر کاور</label>
             @if($news->cover_image_path)
                 <div class="mb-3">
-                    <img src="{{ route('file.logo', basename($news->cover_image_path)) }}"
+                    <img src="{{ route('file.news-cover', basename($news->cover_image_path)) }}"
                          alt="{{ $news->title }}"
                          class="max-w-xs rounded-xl object-cover border border-slate-200">
                     <p class="mt-1 text-xs text-slate-400">انتخاب تصویر جدید، تصویر قبلی را جایگزین می‌کند.</p>
