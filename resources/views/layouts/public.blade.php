@@ -33,7 +33,7 @@
         ['label' => 'صفحه اصلی',     'href' => '#'],
         ['label' => 'اخبار',          'href' => '#'],
         ['label' => 'رویدادها',       'href' => '#'],
-        ['label' => 'واحدهای فناور',  'href' => '#'],
+        ['label' => 'واحدهای فناور',  'href' => route('public.organizations.index')],
         ['label' => 'درباره ما',      'href' => '#'],
         ['label' => 'تماس با ما',     'href' => '#'],
     ];

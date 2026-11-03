@@ -168,6 +168,7 @@
                                                 —
                                             @endif
                                         </p>
+                                        <p class="text-xs text-slate-400"> متن درخواست: {{ $joinRequest->message }} </p>
                                     </div>
                                 </div>
 
