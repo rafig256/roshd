@@ -86,6 +86,26 @@
                                 {{ mb_substr(auth()->user()->name, 0, 1) }}
                             </div>
                             <span class="hidden sm:block">{{ auth()->user()->name }}</span>
+                            {{-- User Status Badge --}}
+                            @php
+                                $isAdmin = auth()->user()->hasRole('super_admin') || auth()->user()->hasRole('site_admin');
+                                $isExpert = auth()->user()->hasRole('expert');
+                                $isInnovator = auth()->user()->is_innovator;
+                            @endphp
+                            <div class="flex items-center gap-1.5">
+                                @if($isAdmin)
+                                    <span class="px-2 py-0.5 text-xs font-medium text-white bg-purple-600 rounded-full">مدیر</span>
+                                @endif
+                                @if($isExpert)
+                                    <span class="px-2 py-0.5 text-xs font-medium text-white bg-blue-600 rounded-full">کارشناس</span>
+                                @endif
+                                @if($isInnovator)
+                                    <span class="px-2 py-0.5 text-xs font-medium text-white bg-emerald-600 rounded-full">فناور</span>
+                                @endif
+                                @if(!$isAdmin && !$isExpert && !$isInnovator)
+                                    <span class="px-2 py-0.5 text-xs font-medium text-white bg-slate-500 rounded-full">کاربر عادی</span>
+                                @endif
+                            </div>
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                 <path d="M19 9l-7 7-7-7" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
