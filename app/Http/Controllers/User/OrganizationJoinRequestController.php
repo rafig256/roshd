@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\User;
 
+use App\Enums\JoinRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Organization;
 use App\Models\OrganizationJoinRequest;
@@ -20,7 +21,7 @@ class OrganizationJoinRequestController extends Controller
             abort(403);
         }
 
-        if ($joinRequest->status !== 'pending') {
+        if ($joinRequest->status !== JoinRequestStatus::Pending) {
             return back()->with('error', 'این درخواست قبلاً بررسی شده است.');
         }
 
@@ -51,7 +52,7 @@ class OrganizationJoinRequestController extends Controller
             abort(403);
         }
 
-        if ($joinRequest->status !== 'pending') {
+        if ($joinRequest->status !== JoinRequestStatus::Pending) {
             return back()->with('error', 'این درخواست قبلاً بررسی شده است.');
         }
 

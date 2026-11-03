@@ -79,6 +79,10 @@ Route::middleware('auth')->name('user.')->group(function () {
     Route::post('/my-team/{organization}/join-requests/{joinRequest}/approve', [UserOrganizationJoinRequestController::class, 'approve'])->name('organizations.join-requests.approve');
     Route::post('/my-team/{organization}/join-requests/{joinRequest}/reject', [UserOrganizationJoinRequestController::class, 'reject'])->name('organizations.join-requests.reject');
 
+    // تبدیل تیم به شرکت
+    Route::get('/my-team/{organization}/convert-to-company', [UserOrganizationController::class, 'showConvertForm'])->name('organizations.convert-to-company');
+    Route::post('/my-team/{organization}/convert-to-company', [UserOrganizationController::class, 'convertToCompany'])->name('organizations.convert-to-company.store');
+
     // درخواست عضویت در تیم‌ها (توسط کاربر)
     Route::post('/organizations/{organization}/join', [PublicOrganizationJoinRequestController::class, 'store'])->name('public.organizations.join');
 

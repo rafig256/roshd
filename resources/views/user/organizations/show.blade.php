@@ -9,16 +9,20 @@
     $orgStatusLabel = $organization->status instanceof \BackedEnum && method_exists($organization->status, 'label')
         ? $organization->status->label()
         : match ($orgStatusValue) {
-            'pending'  => 'در انتظار تأیید',
-            'approved' => 'تأیید شده',
-            'rejected' => 'رد شده',
-            default    => $orgStatusValue ?: 'نامشخص',
+            'team'            => 'تیم',
+            'pending_company' => 'در انتظار تبدیل به شرکت',
+            'company'         => 'شرکت رسمی',
+            'pending'         => 'در انتظار تأیید',
+            'approved'        => 'تأیید شده',
+            'rejected'        => 'رد شده',
+            default           => $orgStatusValue ?: 'نامشخص',
         };
     $orgStatusClass = match ($orgStatusValue) {
-        'approved' => 'bg-emerald-100 text-emerald-800 border-emerald-200',
-        'pending'  => 'bg-amber-100 text-amber-800 border-amber-200',
-        'rejected' => 'bg-red-100 text-red-800 border-red-200',
-        default    => 'bg-slate-100 text-slate-700 border-slate-200',
+        'company', 'approved'        => 'bg-emerald-100 text-emerald-800 border-emerald-200',
+        'pending_company', 'pending' => 'bg-amber-100 text-amber-800 border-amber-200',
+        'rejected'                   => 'bg-red-100 text-red-800 border-red-200',
+        'team'                       => 'bg-sky-100 text-sky-800 border-sky-200',
+        default                      => 'bg-slate-100 text-slate-700 border-slate-200',
     };
 
     // اعضای فعال و درخواست‌های عضویت (از کنترلر یا از رابطه‌ها)
@@ -85,12 +89,35 @@
                     </div>
                 </div>
 
-                <a href="{{ route('user.organizations.edit', $organization->id) }}"
-                   class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-indigo-700 bg-indigo-50 rounded-xl
-                          hover:bg-indigo-100 transition-colors shrink-0">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M16 3l5 5L8 21H3v-5L16 3z"/></svg>
-                    ویرایش اطلاعات تیم
-                </a>
+                <div class="flex flex-col items-stretch sm:items-end gap-2 shrink-0">
+
+                    <a href="{{ route('user.organizations.edit', $organization->id) }}"
+                    class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-indigo-700 bg-indigo-50 rounded-xl
+                            hover:bg-indigo-100 transition-colors">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M16 3l5 5L8 21H3v-5L16 3z"/></svg>
+                        ویرایش اطلاعات تیم
+                    </a>
+
+                    @if ($orgStatusValue === 'team')
+                        <a href="{{ route('user.organizations.convert-to-company', $organization->id) }}"
+                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
+                                bg-gradient-to-l from-indigo-600 to-fuchsia-500 shadow-md shadow-indigo-500/30
+                                hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 7h2M13 7h2M9 11h2M13 11h2M10 21v-4h4v4"/></svg>
+                            درخواست تبدیل به شرکت
+                        </a>
+                    @elseif ($orgStatusValue === 'pending_company')
+                        <span class="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-amber-800 bg-amber-100 border border-amber-200 rounded-xl">
+                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                            درخواست تبدیل به شرکت در حال بررسی است.
+                        </span>
+                    @elseif ($orgStatusValue === 'company')
+                        <span class="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 rounded-xl">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                            شرکت رسمی
+                        </span>
+                    @endif
+                </div>
             </div>
         </div>
 
