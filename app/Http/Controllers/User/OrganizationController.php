@@ -222,7 +222,7 @@ class OrganizationController extends Controller
             'registration_number'  => 'required|string|max:50',
             'economic_code'        => 'nullable|string|max:20',
             'established_date'     => 'required|regex:/^\d{4}\/\d{2}\/\d{2}$/',
-            'company_type'         => 'required|in:private_joint_stock,limited_liability,general_partnership,other',
+            'company_type'         => 'required|in:private_joint_stock,public_joint_stock,limited_liability,general_partnership,other',
             'legal_address'        => 'required|string',
             'phone'                => 'nullable|string|max:20',
             'website'              => 'nullable|url|max:255',

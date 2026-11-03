@@ -6,6 +6,7 @@
 @php
     $companyTypes = [
         'private_joint_stock' => 'سهامی خاص',
+        'public_joint_stock' => 'سهامی عام',
         'limited_liability'   => 'مسئولیت محدود',
         'general_partnership' => 'تضامنی',
         'other'               => 'دیگر',

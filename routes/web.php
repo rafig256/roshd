@@ -9,6 +9,8 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\InnovatorRequestController as AdminInnovatorRequestController;
 use App\Http\Controllers\Admin\PlanController as AdminPlanController;
+use App\Http\Controllers\Admin\CompanyRequestController;
+use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\FileController;
 
 // --- کنترلرهای عمومی (Public) ---
@@ -124,6 +126,16 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/plans/{plan}/approve', [AdminPlanController::class, 'approve'])->name('plans.approve');
         Route::post('/plans/{plan}/reject', [AdminPlanController::class, 'reject'])->name('plans.reject');
         
+        // درخواست‌های تبدیل به شرکت
+        Route::get('/company-requests', [CompanyRequestController::class, 'index'])->name('company-requests.index');
+        Route::get('/company-requests/{organization}', [CompanyRequestController::class, 'show'])->name('company-requests.show');
+        Route::post('/company-requests/{organization}/approve', [CompanyRequestController::class, 'approve'])->name('company-requests.approve');
+        Route::post('/company-requests/{organization}/reject', [CompanyRequestController::class, 'reject'])->name('company-requests.reject');
+        
         Route::get('/download/resume/{filename}', [FileController::class, 'downloadResume'])->name('download.resume');
+
+        // مدیریت سازمان‌ها (تیم‌ها و شرکت‌ها)
+        Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.index');
+        Route::get('/organizations/{organization}', [OrganizationController::class, 'show'])->name('organizations.show');
     });
 });
