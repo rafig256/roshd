@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\InnovatorRequestController as AdminInnovatorReque
 use App\Http\Controllers\Admin\PlanController as AdminPlanController;
 use App\Http\Controllers\Admin\CompanyRequestController;
 use App\Http\Controllers\Admin\OrganizationController;
+use App\Http\Controllers\Admin\NewsCategoryController;
+use App\Http\Controllers\Admin\NewsController;
 use App\Http\Controllers\FileController;
 
 // --- کنترلرهای عمومی (Public) ---
@@ -137,5 +139,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // مدیریت سازمان‌ها (تیم‌ها و شرکت‌ها)
         Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.index');
         Route::get('/organizations/{organization}', [OrganizationController::class, 'show'])->name('organizations.show');
+
+        // مدیریت دسته‌بندی اخبار
+        Route::resource('news-categories', NewsCategoryController::class);
+
+        // مدیریت اخبار
+        Route::resource('news', NewsController::class);
     });
 });

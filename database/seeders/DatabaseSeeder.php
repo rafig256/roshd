@@ -13,6 +13,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             ActivityCategorySeeder::class,
             SettingSeeder::class,
+            NewsCategorySeeder::class,
         ]);
     }
 }
