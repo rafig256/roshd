@@ -128,8 +128,11 @@ class OrganizationController extends Controller
         ]);
 
         if ($request->hasFile('logo')) {
-            if ($organization->logo_path && Storage::disk('public')->exists($organization->logo_path)) {
-                Storage::disk('public')->delete($organization->logo_path);
+            if ($organization->logo_path) {
+                $oldFilename = basename($organization->logo_path);
+                if (Storage::disk('public')->exists('logos/' . $oldFilename)) {
+                    Storage::disk('public')->delete('logos/' . $oldFilename);
+                }
             }
             $organization->logo_path = $request->file('logo')->store('logos', 'public');
         }

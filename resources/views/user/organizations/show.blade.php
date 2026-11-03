@@ -68,7 +68,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-5">
                 <div class="flex items-center gap-4 min-w-0">
                     @if (!empty($organization->logo_path))
-                        <img src="{{ Storage::url($organization->logo_path) }}" alt="{{ $organization->name }}"
+                        <img src="{{ route('file.logo', basename($organization->logo_path)) }}" alt="{{ $organization->name }}"
                              class="w-20 h-20 shrink-0 rounded-2xl object-cover border border-slate-200">
                     @else
                         <div class="w-20 h-20 shrink-0 rounded-2xl bg-gradient-to-br from-cyan-400 to-blue-600 text-white flex items-center justify-center text-3xl font-extrabold shadow-lg shadow-cyan-500/30">

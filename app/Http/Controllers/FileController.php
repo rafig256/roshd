@@ -25,4 +25,15 @@ class FileController extends Controller
 
         return response()->download(Storage::disk('public')->path($path));
     }
+
+    public function showLogo($filename)
+    {
+        $path = 'logos/' . $filename;
+        
+        if (!Storage::disk('public')->exists($path)) {
+            abort(404);
+        }
+
+        return response()->file(Storage::disk('public')->path($path));
+    }
 }

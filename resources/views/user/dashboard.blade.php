@@ -292,9 +292,9 @@
     @if ($team)
         {{-- حالت ۳: کاربر تیم دارد --}}
         <div class="mt-3 flex items-center gap-3">
-            @if (!empty($team->logo_path))
-                <img src="{{ Storage::url($team->logo_path) }}" alt="{{ $team->name }}"
-                     class="w-11 h-11 rounded-xl object-cover border border-slate-200">
+            @if (!empty($latestOrganization->logo_path))
+                <img src="{{ route('file.logo', basename($latestOrganization->logo_path)) }}" alt="{{ $latestOrganization->name }}"
+                    class="w-11 h-11 rounded-xl object-cover border border-slate-200">
             @endif
             <div class="min-w-0">
                 <p class="text-sm font-bold text-slate-800 truncate">{{ $team->name }}</p>

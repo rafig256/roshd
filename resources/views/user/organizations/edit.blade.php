@@ -119,8 +119,8 @@
                     {{-- Current logo --}}
                     @if (!empty($organization->logo_path))
                         <div class="mt-3 flex items-center gap-4 px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl">
-                            <img src="{{ Storage::url($organization->logo_path) }}" alt="لوگوی فعلی {{ $organization->name }}"
-                                 class="w-16 h-16 shrink-0 rounded-xl object-cover border border-slate-200 bg-white">
+                            <img src="{{ route('file.logo', basename($organization->logo_path)) }}" alt="لوگوی فعلی {{ $organization->name }}"
+                                class="w-16 h-16 shrink-0 rounded-xl object-cover border border-slate-200 bg-white">
                             <div>
                                 <p class="text-sm font-semibold text-slate-700">لوگوی فعلی تیم</p>
                                 <p class="mt-1 text-xs leading-6 text-slate-500">برای تغییر لوگو، فایل جدید انتخاب کنید.</p>

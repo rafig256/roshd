@@ -70,6 +70,9 @@ Route::middleware('auth')->name('user.')->group(function () {
     Route::get('/download/resume/{filename}', [FileController::class, 'downloadResume'])->name('download.resume');
 });
 
+// مسیرهای عمومی برای فایل‌ها (خارج از گروه auth)
+Route::get('/storage/logos/{filename}', [FileController::class, 'showLogo'])->name('file.logo');
+
 // ==========================================
 // ۳. مسیرهای پنل مدیریت (فقط ادمین‌ها)
 // ==========================================
