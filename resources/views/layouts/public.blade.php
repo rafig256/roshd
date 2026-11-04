@@ -32,7 +32,7 @@
     $navLinks = [
         ['label' => 'صفحه اصلی',     'href' => route('home')],
         ['label' => 'اخبار',          'href' => route('public.news.index')],
-        ['label' => 'رویدادها',       'href' => '#'],
+        ['label' => 'رویدادها',       'href' => route('public.events.index')],
         ['label' => 'واحدهای فناور',  'href' => route('public.organizations.index')],
         ['label' => 'درباره ما',      'href' => '#'],
         ['label' => 'تماس با ما',     'href' => '#'],

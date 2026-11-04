@@ -21,6 +21,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Public\OrganizationController as PublicOrganizationController;
 use App\Http\Controllers\Public\OrganizationJoinRequestController as PublicOrganizationJoinRequestController;
 use App\Http\Controllers\Public\NewsController as PublicNewsController;
+use App\Http\Controllers\Public\EventController as PublicEventController;
 
 // --- کنترلرهای کاربران عادی (User) ---
 use App\Http\Controllers\Auth\RegisterController;
@@ -48,6 +49,10 @@ Route::get('/organizations/{organization}', [PublicOrganizationController::class
 // مسیرهای عمومی اخبار
 Route::get('/news', [PublicNewsController::class, 'index'])->name('public.news.index');
 Route::get('/news/{news:slug}', [PublicNewsController::class, 'show'])->name('public.news.show');
+
+// مسیرهای عمومی رویدادها
+Route::get('/events', [PublicEventController::class, 'index'])->name('public.events.index');
+Route::get('/events/{event:slug}', [PublicEventController::class, 'show'])->name('public.events.show');
 
 // مسیرهای عمومی برای فایل‌ها
 Route::get('/storage/logos/{filename}', [FileController::class, 'showLogo'])->name('file.logo');

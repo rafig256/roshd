@@ -9,6 +9,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 
 class Event extends Model
 {
@@ -79,5 +81,19 @@ class Event extends Model
     public function registrations(): HasMany
     {
         return $this->hasMany(EventRegistration::class, 'event_id');
+    }
+
+    protected function displayStatus(): Attribute
+    {
+        return Attribute::get(function () {
+            $status = $this->status instanceof \BackedEnum ? $this->status->value : $this->status;
+
+            if ($status === 'cancelled') return 'cancelled';
+            if ($status === 'finished' || ($this->ends_at && $this->ends_at->isPast())) return 'finished';
+            if (!$this->registration_required) return 'open';
+            if ($this->registration_deadline && $this->registration_deadline->isPast()) return 'closed';
+
+            return 'registering';
+        });
     }
 }
