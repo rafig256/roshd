@@ -55,7 +55,6 @@
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M9 5l7 7-7 7"/></svg>
             بازگشت به رویدادها
         </a>
-
         {{-- ============ Header ============ --}}
         <header>
             <div class="relative h-56 sm:h-80 rounded-2xl overflow-hidden border border-slate-200 shadow-xl shadow-slate-900/10 bg-gradient-to-br from-indigo-500 to-fuchsia-600">

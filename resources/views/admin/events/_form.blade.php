@@ -20,7 +20,35 @@
     // مقدار فیلد: old() اولویت دارد، بعد مقدار رویداد، بعد مقدار پیش‌فرض
     $v  = fn (string $field, $default = null) => old($field, $event ? $event->{$field} : $default);
     // فرمت مقدار datetime-local
-    $dt = fn ($value) => $value ? \Carbon\Carbon::parse($value)->format('Y-m-d\TH:i') : null;
+    // ارقام فارسی/عربی -> لاتین
+    $toLatin = fn ($s) => strtr((string) $s, [
+        '۰'=>'0','۱'=>'1','۲'=>'2','۳'=>'3','۴'=>'4','۵'=>'5','۶'=>'6','۷'=>'7','۸'=>'8','۹'=>'9',
+        '٠'=>'0','١'=>'1','٢'=>'2','٣'=>'3','٤'=>'4','٥'=>'5','٦'=>'6','٧'=>'7','٨'=>'8','٩'=>'9',
+    ]);
+
+    // هر مقداری (Carbon میلادی، رشته‌ی میلادی، یا رشته‌ی شمسی) را به «1403/08/15 14:30» تبدیل می‌کند
+    $jdt = function ($v) use ($toLatin) {
+        if (!$v) return null;
+        $raw = $toLatin(trim((string) $v));
+
+        if (preg_match('/^(\d{4})[\/-](\d{1,2})[\/-](\d{1,2})(?:[ T]+(\d{1,2}):(\d{2}))?/', $raw, $m) && (int) $m[1] < 1700) {
+            return sprintf('%04d/%02d/%02d', $m[1], $m[2], $m[3])
+                . (isset($m[4]) ? sprintf(' %02d:%02d', $m[4], $m[5]) : '');
+        }
+
+        try {
+            return $toLatin(\Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($v))->format('Y/m/d H:i'));
+        } catch (\Throwable $e) {
+            return null;
+        }
+    };
+
+    // فیلدهای تاریخ‌ـ‌ساعت‌دار
+    $dateTimeFields = [
+        ['name' => 'starts_at',             'label' => 'شروع',        'required' => true],
+        ['name' => 'ends_at',               'label' => 'پایان',       'required' => true],
+        ['name' => 'registration_deadline', 'label' => 'مهلت ثبت‌نام', 'required' => false],
+    ];
 
     // old() برای چک‌باکس‌های تیک‌نخورده کلیدی ندارد؛ پس اگر فرم قبلاً ارسال شده، فقط به old() تکیه می‌کنیم
     $hasOld = count(old()) > 0;
@@ -145,25 +173,39 @@
             <h3 class="text-base font-semibold text-slate-800">زمان و مکان</h3>
         </div>
         <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div>
-                <label for="starts_at" class="{{ $label }}">شروع <span class="text-red-500">*</span></label>
-                <input type="datetime-local" id="starts_at" name="starts_at" value="{{ old('starts_at', $event ? $dt($event->starts_at) : null) }}" dir="ltr"
-                       class="{{ $input }} text-left @error('starts_at') border-red-400 @else border-slate-300 @enderror">
-                @error('starts_at') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="ends_at" class="{{ $label }}">پایان <span class="text-red-500">*</span></label>
-                <input type="datetime-local" id="ends_at" name="ends_at" value="{{ old('ends_at', $event ? $dt($event->ends_at) : null) }}" dir="ltr"
-                       class="{{ $input }} text-left @error('ends_at') border-red-400 @else border-slate-300 @enderror">
-                @error('ends_at') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
-            <div>
-                <label for="registration_deadline" class="{{ $label }}">مهلت ثبت‌نام</label>
-                <input type="datetime-local" id="registration_deadline" name="registration_deadline" value="{{ old('registration_deadline', $event ? $dt($event->registration_deadline) : null) }}" dir="ltr"
-                       class="{{ $input }} text-left @error('registration_deadline') border-red-400 @else border-slate-300 @enderror">
-                @error('registration_deadline') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
-            </div>
+            @foreach ($dateTimeFields as $f)
+                @php
+                    $name    = $f['name'];
+                    $value   = $jdt(old($name, $event ? $event->{$name} : null));
+                    $timeVal = preg_match('/(\d{2}:\d{2})$/', (string) $value, $tm) ? $tm[1] : '';
+                    $hasErr  = $errors->has($name);
+                @endphp
 
+                <div class="md:col-span-3">
+                    <label for="{{ $name }}_time" class="{{ $label }}">
+                        {{ $f['label'] }} @if ($f['required']) <span class="text-red-500">*</span> @endif
+                    </label>
+
+                    {{-- مقدار نهایی که به کنترلر می‌رود: 1403/08/15 14:30 --}}
+                    <input type="hidden" id="{{ $name }}" name="{{ $name }}" value="{{ $value }}">
+
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <div class="datepicker-wrap flex-1 rounded-lg border bg-slate-50 transition
+                                    focus-within:bg-white focus-within:ring-2 focus-within:ring-indigo-500 focus-within:border-indigo-500
+                                    {{ $hasErr ? 'border-red-400' : 'border-slate-300' }}">
+                            <persian-datepicker-element id="{{ $name }}_picker"
+                                                        placeholder="1403/01/01" format="YYYY/MM/DD" rtl
+                                                        class="block w-full"></persian-datepicker-element>
+                        </div>
+
+                        <input type="time" id="{{ $name }}_time" name="{{ $name }}_time" value="{{ $timeVal }}" dir="ltr"
+                            aria-label="ساعت {{ $f['label'] }}"
+                            class="{{ $input }} sm:w-44 text-left {{ $hasErr ? 'border-red-400' : 'border-slate-300' }}">
+                    </div>
+
+                    @error($name) <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
+                </div>
+            @endforeach
             <div class="md:col-span-3">
                 <label for="location_type" class="{{ $label }}">نوع برگزاری <span class="text-red-500">*</span></label>
                 <select id="location_type" name="location_type"
@@ -387,10 +429,14 @@
     .ts-control { border-radius: .5rem; border-color: #cbd5e1; background: #f8fafc; padding: .55rem .75rem; font-size: .875rem; font-family: inherit; }
     .ts-wrapper.focus .ts-control { border-color: #6366f1; background: #fff; box-shadow: 0 0 0 2px rgba(99,102,241,.3); }
     .ts-dropdown { text-align: right; font-size: .875rem; font-family: inherit; border-radius: .5rem; }
+    persian-datepicker-element { display: block; width: 100%; font-family: 'Vazirmatn', Tahoma, sans-serif; }
+    .datepicker-wrap { padding: 0.25rem 0.5rem; }
 </style>
+
 @endpush
 
 @push('scripts')
+<script type="module" src="https://cdn.jsdelivr.net/npm/persian-datepicker-element@1.1.17/dist/persian-datepicker-element.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/tom-select@2.3.1/dist/js/tom-select.complete.min.js"></script>
 <script>
 (function () {
@@ -430,6 +476,50 @@
     }
     pay.addEventListener('change', syncPay);
     syncPay();
+
+    // ---------- Jalali date + time -> hidden field ----------
+    (function () {
+        const pad = (n) => String(n).padStart(2, '0');
+        const toLatin = (s) => String(s)
+            .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+            .replace(/[٠-٩]/g, d => '٠١٢٣٤٥٦٧٨٩'.indexOf(d));
+
+        function setupDateTime(name) {
+            const hidden = document.getElementById(name);
+            const picker = document.getElementById(name + '_picker');
+            const time   = document.getElementById(name + '_time');
+            if (!hidden || !picker || !time) return;
+
+            let date = null; // "1403/08/15"
+
+            // مقدار اولیه (old یا مقدار ذخیره‌شده)
+            const m = toLatin(hidden.value || '').trim().match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})/);
+            if (m) {
+                date = `${m[1]}/${pad(m[2])}/${pad(m[3])}`;
+                customElements.whenDefined('persian-datepicker-element').then(() => {
+                    picker.setValue(+m[1], +m[2], +m[3]);
+                });
+            }
+
+            function sync() {
+                if (!date) { hidden.value = ''; return; }
+                hidden.value = time.value ? `${date} ${time.value}` : date;
+            }
+
+            picker.addEventListener('change', (e) => {
+                const j = e.detail && e.detail.jalali;
+                date = Array.isArray(j) && j.length === 3 ? `${j[0]}/${pad(j[1])}/${pad(j[2])}` : null;
+                sync();
+            });
+            time.addEventListener('input', sync);
+            time.addEventListener('change', sync);
+            hidden.form && hidden.form.addEventListener('submit', sync);
+
+            sync();
+        }
+
+        ['starts_at', 'ends_at', 'registration_deadline'].forEach(setupDateTime);
+    })();
 
     // ---------- Dynamic rows ----------
     function createRepeater(cfg) {

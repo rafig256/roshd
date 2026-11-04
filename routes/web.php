@@ -57,6 +57,7 @@ Route::get('/events/{event:slug}', [PublicEventController::class, 'show'])->name
 // مسیرهای عمومی برای فایل‌ها
 Route::get('/storage/logos/{filename}', [FileController::class, 'showLogo'])->name('file.logo');
 Route::get('/storage/news-covers/{filename}', [FileController::class, 'showNewsCover'])->name('file.news-cover');
+Route::get('/storage/event-covers/{filename}', [FileController::class, 'showEventCover'])->name('file.event-cover');
 
 // ==========================================
 // ۲. مسیرهای کاربران عادی (فناوران)

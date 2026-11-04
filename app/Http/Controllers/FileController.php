@@ -47,4 +47,15 @@ class FileController extends Controller
 
         return response()->file(Storage::disk('public')->path($path));
     }
+
+    public function showEventCover($filename)
+    {
+        $path = 'event-covers/' . $filename;
+        
+        if (!Storage::disk('public')->exists($path)) {
+            abort(404);
+        }
+
+        return response()->file(Storage::disk('public')->path($path));
+    }
 }
