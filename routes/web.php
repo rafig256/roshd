@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\CompanyRequestController;
 use App\Http\Controllers\Admin\OrganizationController;
 use App\Http\Controllers\Admin\NewsCategoryController;
 use App\Http\Controllers\Admin\NewsController;
+use App\Http\Controllers\Admin\EventController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HomeController;
 
@@ -150,5 +151,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // مدیریت اخبار
         Route::resource('news', NewsController::class);
+
+        // مدیریت رویدادها
+        Route::resource('events', EventController::class);
     });
 });
