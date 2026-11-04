@@ -19,6 +19,7 @@ use App\Http\Controllers\HomeController;
 // --- کنترلرهای عمومی (Public) ---
 use App\Http\Controllers\Public\OrganizationController as PublicOrganizationController;
 use App\Http\Controllers\Public\OrganizationJoinRequestController as PublicOrganizationJoinRequestController;
+use App\Http\Controllers\Public\NewsController as PublicNewsController;
 
 // --- کنترلرهای کاربران عادی (User) ---
 use App\Http\Controllers\Auth\RegisterController;
@@ -42,6 +43,10 @@ Route::post('/register', [RegisterController::class, 'register'])->name('registe
 // مسیرهای عمومی واحدهای فناور (تیم‌ها)
 Route::get('/organizations', [PublicOrganizationController::class, 'index'])->name('public.organizations.index');
 Route::get('/organizations/{organization}', [PublicOrganizationController::class, 'show'])->name('public.organizations.show');
+
+// مسیرهای عمومی اخبار
+Route::get('/news', [PublicNewsController::class, 'index'])->name('public.news.index');
+Route::get('/news/{news:slug}', [PublicNewsController::class, 'show'])->name('public.news.show');
 
 // مسیرهای عمومی برای فایل‌ها
 Route::get('/storage/logos/{filename}', [FileController::class, 'showLogo'])->name('file.logo');

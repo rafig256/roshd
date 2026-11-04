@@ -164,7 +164,7 @@
                 <span class="text-sm font-bold text-indigo-600">جدیدترین‌ها</span>
                 <h2 class="mt-3 text-3xl sm:text-4xl font-extrabold text-slate-900">اخبار و رویدادهای اخیر</h2>
             </div>
-            <a href="#" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
+            <a href="{{ route('public.news.index') }}" class="inline-flex items-center gap-2 text-sm font-semibold text-indigo-600 hover:text-indigo-800 transition-colors">
                 مشاهده همه
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                      stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -206,7 +206,7 @@
                         <p class="mt-2 text-sm leading-7 text-slate-600 line-clamp-3">
                             {{ $news->excerpt ?? Str::limit($news->body, 150) }}
                         </p>
-                        <a href="#" class="mt-5 pt-4 border-t border-slate-100 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 mt-auto">
+                        <a href="{{ route('public.news.show', $news->slug) }}" class="mt-5 pt-4 border-t border-slate-100 inline-flex items-center gap-1.5 text-sm font-semibold text-indigo-600 mt-auto">
                             ادامه مطلب
                             <svg class="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" stroke="currentColor" stroke-width="2"
                                  stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">

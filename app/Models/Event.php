@@ -66,6 +66,11 @@ class Event extends Model
         );
     }
 
+    public function sessions(): HasMany
+    {
+        return $this->hasMany(EventSession::class, 'event_id');
+    }
+
     public function speakers(): HasMany
     {
         return $this->hasMany(EventSpeaker::class, 'event_id');

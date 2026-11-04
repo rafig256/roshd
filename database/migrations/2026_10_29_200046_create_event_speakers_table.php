@@ -11,14 +11,11 @@ return new class extends Migration
         Schema::create('event_speakers', function (Blueprint $table) {
             $table->id();
             $table->foreignId('event_id')->constrained('events')->cascadeOnDelete();
-            $table->string('name', 255);
-            $table->string('title', 255)->nullable();
-            $table->text('bio')->nullable();
-            $table->string('avatar_path')->nullable();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('title', 255)->nullable(); // عنوان سخنرانی
+            $table->text('bio')->nullable(); // بیوگرافی برای این رویداد
             $table->unsignedInteger('order')->default(0);
             $table->timestamps();
-
-            $table->index('event_id');
         });
     }
 
