@@ -96,4 +96,40 @@ class Event extends Model
             return 'registering';
         });
     }
+
+        // این متد تاریخ شمسی آماده را برمی‌گرداند
+    public function getJalaliDateAttribute()
+        {
+            if (!$this->starts_at) return null;
+            
+            $date = \Morilog\Jalali\Jalalian::fromCarbon($this->starts_at);
+            $formattedDate = $date->format('j F Y');
+            
+            // تبدیل اعداد به فارسی
+            $formattedDate = strtr($formattedDate, ['0'=>'۰','1'=>'۱','2'=>'۲','3'=>'۳','4'=>'۴','5'=>'۵','6'=>'۶','7'=>'۷','8'=>'۸','9'=>'۹']);
+            $time = strtr($this->starts_at->format('H:i'), ['0'=>'۰','1'=>'۱','2'=>'۲','3'=>'۳','4'=>'۴','5'=>'۵','6'=>'۶','7'=>'۷','8'=>'۸','9'=>'۹']);
+            
+            return $formattedDate . ' - ساعت ' . $time;
+        }
+
+            // بررسی اینکه آیا رویداد در حال ثبت‌نام است
+    public function isRegistering()
+    {
+        // اگر ثبت‌نام نیاز نباشد، همیشه باز است
+        if (!$this->registration_required) {
+            return true; 
+        }
+
+        // اگر نیاز به ثبت‌نام باشد، چک می‌کنیم که مهلت ثبت‌نام نگذشته باشد
+        if ($this->registration_deadline && now()->greaterThan($this->registration_deadline)) {
+            return false;
+        }
+
+        // بررسی می‌کنیم که ظرفیت پر نشده باشد (اگر ظرفیت تعریف شده باشد)
+        if ($this->capacity && $this->registrations()->count() >= $this->capacity) {
+            return false;
+        }
+
+        return true;
+    }
 }

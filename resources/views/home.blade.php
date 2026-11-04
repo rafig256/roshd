@@ -221,6 +221,25 @@
 </section>
 
 {{-- ============ 5. Events (slider) ============ --}}
+@php
+
+    $locationLabels = ['physical' => 'حضوری', 'online' => 'آنلاین', 'hybrid' => 'ترکیبی'];
+
+    $gradients = [
+        'from-indigo-500 to-indigo-800', 'from-fuchsia-500 to-pink-700', 'from-emerald-500 to-teal-700',
+        'from-orange-400 to-rose-600',   'from-cyan-500 to-blue-700',    'from-violet-500 to-purple-800',
+    ];
+
+    $icons = [
+        'clock'    => 'M12 6v6l4 2M12 21a9 9 0 100-18 9 9 0 000 18z',
+        'mic'      => 'M12 14a3 3 0 003-3V6a3 3 0 10-6 0v5a3 3 0 003 3zM19 11a7 7 0 01-14 0M12 18v3',
+        'topic'    => 'M7 8h10M7 12h10M7 16h6M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z',
+        'pin'      => 'M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
+        'ticket'   => 'M3 9a2 2 0 002-2h14a2 2 0 002 2v0a2 2 0 000 6v0a2 2 0 00-2 2H5a2 2 0 00-2-2v0a2 2 0 000-6zM13 7v10',
+        'users'    => 'M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 20a8 8 0 0116 0',
+    ];
+@endphp
+
 <section id="events" class="py-20 lg:py-28 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
@@ -251,267 +270,93 @@
             </div>
         </div>
 
-        @php
-            /*
-             * نمونه داده‌ی ثابت. هر فیلد اختیاری است (null یا خالی = نمایش داده نمی‌شود).
-             * status: planning | registering | closed | finished
-             * fee: null = نامشخص (نمایش داده نمی‌شود) | 0 = رایگان | عدد = مبلغ به تومان
-             */
-            $events = collect([
-                [
-                    'title'      => 'رویداد معرفی استارتاپ‌ها به سرمایه‌گذاران',
-                    'image'      => null,
-                    'gradient'   => 'from-indigo-500 to-indigo-800',
-                    'status'     => 'registering',
-                    'format'     => 'حضوری',
-                    'start_date' => '۱۵ آبان ۱۴۰۴', 'start_time' => '۱۶:۰۰',
-                    'end_date'   => '۱۵ آبان ۱۴۰۴', 'end_time'   => '۲۰:۰۰',
-                    'speakers'   => 'دکتر احمدی، مهندس کریمی، خانم رضایی',
-                    'topic'      => 'جذب سرمایه و Pitch Deck',
-                    'partners'   => 'پارک علم و فناوری، صندوق نوآوری',
-                    'location'   => 'سالن همایش‌های مرکز نوآوری شهری',
-                    'fee'        => 0,
-                    'capacity'   => '۱۵۰ نفر',
-                ],
-                [
-                    'title'      => 'کارگاه مدل کسب‌وکار و اعتبارسنجی ایده',
-                    'image'      => null,
-                    'gradient'   => 'from-fuchsia-500 to-pink-700',
-                    'status'     => 'registering',
-                    'format'     => 'ترکیبی',
-                    'start_date' => '۲۲ آبان ۱۴۰۴', 'start_time' => '۰۹:۰۰',
-                    'end_date'   => '۲۳ آبان ۱۴۰۴', 'end_time'   => '۱۷:۰۰',
-                    'speakers'   => 'مهندس صالحی',
-                    'topic'      => 'Business Model Canvas',
-                    'partners'   => 'دانشگاه صنعتی',
-                    'location'   => 'کارگاه شماره ۲ - طبقه‌ی دوم',
-                    'fee'        => 450000,
-                    'capacity'   => '۴۰ نفر',
-                ],
-                [
-                    'title'      => 'هفته‌ی نوآوری شهری',
-                    'image'      => null,
-                    'gradient'   => 'from-emerald-500 to-teal-700',
-                    'status'     => 'planning',
-                    'format'     => null,
-                    'start_date' => '۵ آذر ۱۴۰۴', 'start_time' => null,
-                    'end_date'   => null, 'end_time' => null,
-                    'speakers'   => null,
-                    'topic'      => 'فناوری‌های شهری هوشمند',
-                    'partners'   => null,
-                    'location'   => null,
-                    'fee'        => null,
-                    'capacity'   => null,
-                ],
-                [
-                    'title'      => 'مسابقه‌ی هکاتون حل مسائل شهری',
-                    'image'      => null,
-                    'gradient'   => 'from-orange-400 to-rose-600',
-                    'status'     => 'closed',
-                    'format'     => 'حضوری',
-                    'start_date' => '۱ آذر ۱۴۰۴', 'start_time' => '۰۸:۰۰',
-                    'end_date'   => '۳ آذر ۱۴۰۴', 'end_time'   => '۱۸:۰۰',
-                    'speakers'   => 'داوران: دکتر موسوی، مهندس نظری',
-                    'topic'      => 'حمل‌ونقل و محیط زیست',
-                    'partners'   => 'شهرداری، شرکت دانش‌بنیان آرمان',
-                    'location'   => 'مرکز نوآوری شهری',
-                    'fee'        => 200000,
-                    'capacity'   => '۱۲۰ نفر',
-                ],
-                [
-                    'title'      => 'نشست تخصصی هوش مصنوعی در کسب‌وکار',
-                    'image'      => null,
-                    'gradient'   => 'from-cyan-500 to-blue-700',
-                    'status'     => 'finished',
-                    'format'     => 'آنلاین',
-                    'start_date' => '۱۰ مهر ۱۴۰۴', 'start_time' => '۱۸:۰۰',
-                    'end_date'   => null, 'end_time' => '۲۰:۳۰',
-                    'speakers'   => 'دکتر فرهمند',
-                    'topic'      => 'کاربرد AI در محصولات نوپا',
-                    'partners'   => null,
-                    'location'   => 'برگزاری آنلاین',
-                    'fee'        => 0,
-                    'capacity'   => null,
-                ],
-                [
-                    'title'      => 'رویداد شبکه‌سازی کارآفرینان',
-                    'image'      => null,
-                    'gradient'   => 'from-violet-500 to-purple-800',
-                    'status'     => 'finished',
-                    'format'     => 'حضوری',
-                    'start_date' => null, 'start_time' => null,
-                    'end_date'   => null, 'end_time' => null,
-                    'speakers'   => null,
-                    'topic'      => null,
-                    'partners'   => null,
-                    'location'   => null,
-                    'fee'        => null,
-                    'capacity'   => null,
-                ],
-            ])->take(6); // حداکثر ۶ رویداد
+        @if ($homeEvents->isEmpty())
+            <div class="mt-12 py-16 text-center rounded-2xl border border-dashed border-slate-300 bg-slate-50">
+                <p class="text-base font-semibold text-slate-500">به‌زودی رویدادهای جدید اعلام می‌شود.</p>
+            </div>
+        @else
+            {{-- Slider --}}
+            <div class="mt-12 -mx-4 sm:mx-0">
+                <div id="events-slider"
+                     class="events-scroller flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth px-4 sm:px-0 pb-6">
 
-            $statusMap = [
-                'planning'    => ['label' => 'در حال برنامه‌ریزی', 'badge' => 'bg-amber-100 text-amber-800',     'dot' => 'bg-amber-500'],
-                'registering' => ['label' => 'در حال ثبت‌نام',      'badge' => 'bg-emerald-100 text-emerald-800', 'dot' => 'bg-emerald-500 animate-pulse'],
-                'closed'      => ['label' => 'پایان ثبت‌نام',       'badge' => 'bg-rose-100 text-rose-800',       'dot' => 'bg-rose-500'],
-                'finished'    => ['label' => 'برگزار شده',          'badge' => 'bg-slate-200 text-slate-700',     'dot' => 'bg-slate-500'],
-            ];
+                    @foreach ($homeEvents as $event)
+                        <article class="events-card group shrink-0 snap-start flex flex-col
+                                        w-[85%] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]
+                                        bg-white rounded-2xl overflow-hidden border border-slate-200
+                                        hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-1 transition-all">
 
-            // آیکون‌ها (مسیر SVG)
-            $icons = [
-                'clock'    => 'M12 6v6l4 2M12 21a9 9 0 100-18 9 9 0 000 18z',
-                'mic'      => 'M12 14a3 3 0 003-3V6a3 3 0 10-6 0v5a3 3 0 003 3zM19 11a7 7 0 01-14 0M12 18v3',
-                'topic'    => 'M7 8h10M7 12h10M7 16h6M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z',
-                'partners' => 'M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-4.13a4 4 0 11-8 0 4 4 0 018 0zm6 0a3 3 0 11-6 0 3 3 0 016 0z',
-                'pin'      => 'M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
-                'ticket'   => 'M3 9a2 2 0 002-2h14a2 2 0 002 2v0a2 2 0 000 6v0a2 2 0 00-2 2H5a2 2 0 00-2-2v0a2 2 0 000-6zM13 7v10',
-                'users'    => 'M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 20a8 8 0 0116 0',
-            ];
+                            {{-- Banner --}}
+                            <a href="{{ route('public.events.show', $event->slug) }}"
+                               class="block relative h-48 overflow-hidden bg-gradient-to-br {{ $gradients[$event->id % count($gradients)] }}">
+                                @if ($event->cover_image_path)
+                                    <img src="{{ route('file.event-cover', basename($event->cover_image_path)) }}" alt="{{ $event->title }}" loading="lazy"
+                                        class="absolute inset-0 w-full h-full object-cover {{ in_array($event->status, [\App\Enums\EventStatus::Finished, \App\Enums\EventStatus::Cancelled]) ? 'grayscale-[40%]' : '' }}">
+                                @else
+                                    <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/15"></div>
+                                    <div class="absolute -bottom-12 -left-8 w-36 h-36 rounded-full bg-white/10"></div>
+                                    <div class="absolute inset-0 flex items-center justify-center">
+                                        <svg class="w-14 h-14 text-white/70" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg>
+                                    </div>
+                                @endif
 
-            // ترکیب تاریخ و ساعت به‌صورت امن
-            $joinDateTime = function ($date, $time) {
-                if ($date && $time) return $date . ' - ساعت ' . $time;
-                if ($date)          return $date;
-                if ($time)          return 'ساعت ' . $time;
-                return null;
-            };
-        @endphp
-
-        {{-- Slider --}}
-        <div class="mt-12 -mx-4 sm:mx-0">
-            <div id="events-slider"
-                 class="events-scroller flex gap-6 overflow-x-auto snap-x snap-mandatory scroll-smooth px-4 sm:px-0 pb-6">
-
-                @foreach ($events as $event)
-                    @php
-                        $st = $statusMap[$event['status'] ?? 'planning'] ?? $statusMap['planning'];
-
-                        $start = $joinDateTime($event['start_date'] ?? null, $event['start_time'] ?? null);
-                        $end   = $joinDateTime($event['end_date']   ?? null, $event['end_time']   ?? null);
-
-                        // ساخت ردیف‌ها؛ فقط ردیف‌هایی که مقدار دارند نمایش داده می‌شوند
-                        $rows = [];
-                        if ($start) $rows[] = ['icon' => 'clock',    'label' => 'شروع',        'value' => $start];
-                        if ($end)   $rows[] = ['icon' => 'clock',    'label' => 'پایان',       'value' => $end];
-                        if (!empty($event['topic']))    $rows[] = ['icon' => 'topic',    'label' => 'موضوع اصلی',   'value' => $event['topic']];
-                        if (!empty($event['speakers'])) $rows[] = ['icon' => 'mic',      'label' => 'سخنرانان',     'value' => $event['speakers']];
-                        if (!empty($event['partners'])) $rows[] = ['icon' => 'partners', 'label' => 'همکاران برگزاری', 'value' => $event['partners']];
-                        if (!empty($event['location'])) $rows[] = ['icon' => 'pin',      'label' => 'مکان',         'value' => $event['location']];
-                        if (!empty($event['capacity'])) $rows[] = ['icon' => 'users',    'label' => 'ظرفیت',        'value' => $event['capacity']];
-
-                        $feeText = null;
-                        if (array_key_exists('fee', $event) && $event['fee'] !== null) {
-                            $feeText = ((int) $event['fee'] === 0)
-                                ? 'رایگان'
-                                : number_format((int) $event['fee']) . ' تومان';
-                        }
-                        if ($feeText) $rows[] = ['icon' => 'ticket', 'label' => 'هزینه‌ی شرکت', 'value' => $feeText];
-
-                        $isFinished = ($event['status'] ?? '') === 'finished';
-                    @endphp
-
-                    <article class="events-card group shrink-0 snap-start flex flex-col
-                                    w-[85%] sm:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]
-                                    bg-white rounded-2xl overflow-hidden border border-slate-200
-                                    hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-1 transition-all">
-
-                        {{-- Banner --}}
-                        <div class="relative h-48 overflow-hidden bg-gradient-to-br {{ $event['gradient'] ?? 'from-slate-500 to-slate-700' }}">
-                            @if (!empty($event['image']))
-                                <img src="{{ $event['image'] }}" alt="{{ $event['title'] }}"
-                                     class="absolute inset-0 w-full h-full object-cover {{ $isFinished ? 'grayscale-[40%]' : '' }}">
-                            @else
-                                <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/15"></div>
-                                <div class="absolute -bottom-12 -left-8 w-36 h-36 rounded-full bg-white/10"></div>
-                                <div class="absolute inset-0 flex items-center justify-center">
-                                    <svg class="w-14 h-14 text-white/70" fill="none" stroke="currentColor" stroke-width="1.5"
-                                         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                        <path d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z"/>
-                                    </svg>
-                                </div>
-                            @endif
-
-                            {{-- Status badge --}}
-                            <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full shadow-sm {{ $st['badge'] }}">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $st['dot'] }}"></span>
-                                {{ $st['label'] }}
-                            </span>
-
-                            {{-- Format badge (optional) --}}
-                            @if (!empty($event['format']))
-                                <span class="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-black/40 backdrop-blur rounded-full">
-                                    {{ $event['format'] }}
+                                <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full shadow-sm {{ $event->status->badgeClasses() }}">
+                                <span class="w-1.5 h-1.5 rounded-full {{ $event->status->dotColor() }}"></span>
+                                    {{ $event->status->label() }}
                                 </span>
-                            @endif
-                        </div>
+                                <span class="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-black/40 backdrop-blur rounded-full">
+                                    @if($event->location_type->value === 'physical') حضوری
+                                    @elseif($event->location_type->value === 'online') آنلاین
+                                    @else ترکیبی @endif
+                                </span>
+                                
+                            </a>
 
-                        {{-- Body --}}
-                        <div class="flex-1 flex flex-col p-6">
-                            <h3 class="text-base font-bold leading-7 text-slate-900 line-clamp-2 min-h-[3.5rem] group-hover:text-indigo-600 transition-colors">
-                                {{ $event['title'] }}
-                            </h3>
-
-                            @if (count($rows))
-                                <dl class="mt-4 space-y-3">
-                                    @foreach ($rows as $row)
-                                        <div class="flex items-start gap-3">
-                                            <span class="mt-0.5 w-8 h-8 shrink-0 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8"
-                                                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                                                    <path d="{{ $icons[$row['icon']] }}"/>
-                                                </svg>
-                                            </span>
-                                            <div class="min-w-0">
-                                                <dt class="text-xs text-slate-400">{{ $row['label'] }}</dt>
-                                                <dd class="text-sm font-medium leading-6 text-slate-700 line-clamp-2
-                                                           {{ $row['label'] === 'هزینه‌ی شرکت' && $row['value'] === 'رایگان' ? '!text-emerald-600 font-bold' : '' }}">
-                                                    {{ $row['value'] }}
-                                                </dd>
-                                            </div>
+                            {{-- Body --}}
+                            <div class="flex-1 flex flex-col p-6">
+                                <h3 class="text-base font-bold leading-7 text-slate-900 line-clamp-2 min-h-[3.5rem] group-hover:text-indigo-600 transition-colors">
+                                    <a href="{{ route('public.events.show', $event->slug) }}">{{ $event->title }}</a>
+                                </h3>
+                                
+                                <dl class="mt-4 space-y-3">                            
+                                    <div class="flex items-start gap-3">
+                                        <span class="mt-0.5 w-8 h-8 shrink-0 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="ticket"/></svg>
+                                        </span>
+                                        <div class="min-w-0">
+                                            <dt class="text-xs text-slate-400">لیبل</dt>
+                                            <dd class="text-sm font-medium leading-6 text-slate-700 line-clamp-2">
+                                                مقدار
+                                            </dd>
                                         </div>
-                                    @endforeach
+                                    </div>
                                 </dl>
-                            @endif
+                                
+                                @if (!$event->starts_at)
+                                    <p class="mt-3 px-3 py-2 text-xs text-amber-700 bg-amber-50 rounded-lg">زمان برگزاری به‌زودی اعلام می‌شود.</p>
+                                @endif
 
-                            {{-- اگر زمان برگزاری مشخص نیست --}}
-                            @if (!$start && !$end)
-                                <p class="mt-3 px-3 py-2 text-xs text-amber-700 bg-amber-50 rounded-lg">
-                                    زمان برگزاری به‌زودی اعلام می‌شود.
-                                </p>
-                            @endif
-
-                            {{-- Action (همیشه پایین کارت) --}}
-                            <div class="mt-auto pt-6">
-                                @switch($event['status'] ?? 'planning')
-                                    @case('registering')
-                                        <a href="#"
+                                {{-- Action (همیشه پایین کارت) --}}
+                                <div class="mt-auto pt-6">
+                                    @if ($event->isRegistering())
+                                        <a href="{{ route('public.events.show', $event->slug) }}"
                                            class="block w-full py-2.5 text-center text-sm font-bold text-white rounded-xl bg-gradient-to-l from-indigo-600 to-fuchsia-500
                                                   shadow-md shadow-indigo-500/30 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                                            ثبت‌نام در رویداد
+                                            جزئیات و ثبت‌نام
                                         </a>
-                                        @break
-                                    @case('closed')
-                                        <span class="block w-full py-2.5 text-center text-sm font-semibold text-slate-400 bg-slate-100 rounded-xl cursor-not-allowed">
-                                            ثبت‌نام بسته شد
-                                        </span>
-                                        @break
-                                    @case('finished')
-                                        <a href="#"
+                                    @else
+                                        <a href="{{ route('public.events.show', $event->slug) }}"
                                            class="block w-full py-2.5 text-center text-sm font-semibold text-slate-700 border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors">
-                                            مشاهده گزارش و تصاویر
+                                            مشاهده جزئیات
                                         </a>
-                                        @break
-                                    @default
-                                        <span class="block w-full py-2.5 text-center text-sm font-semibold text-amber-700 bg-amber-50 rounded-xl cursor-not-allowed">
-                                            به‌زودی
-                                        </span>
-                                @endswitch
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                    </article>
-                @endforeach
+                        </article>
+                    @endforeach
+                </div>
             </div>
-        </div>
+        @endif
     </div>
 </section>
 

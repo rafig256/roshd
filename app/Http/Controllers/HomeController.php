@@ -17,11 +17,10 @@ class HomeController extends Controller
             ->get();
 
         $homeEvents = Event::where('status', EventStatus::Published)
-            ->where('starts_at', '>=', now())
             ->orderBy('starts_at', 'asc')
             ->take(6)
             ->get();
-
+            // dd($homeEvents);
         return view('home', compact('latestNews', 'homeEvents'));
     }
 }
