@@ -124,6 +124,11 @@
                                             حذف
                                         </button>
                                     </form>
+                                    <a href="{{ route('admin.events.registrations', $event->id) }}" 
+                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-50 rounded-md hover:bg-blue-100 transition-colors">
+                                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-4.13a4 4 0 11-8 0 4 4 0 018 0zm6 0a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                        ثبت‌نامی‌ها
+                                    </a>
                                 </div>
                             </td>
                         </tr>

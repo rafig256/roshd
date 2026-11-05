@@ -164,5 +164,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // مدیریت رویدادها
         Route::resource('events', EventController::class);
+        Route::get('/events/{event}/registrations', [App\Http\Controllers\Admin\EventController::class, 'registrations'])->name('events.registrations');
+
     });
 });

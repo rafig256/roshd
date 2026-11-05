@@ -8,12 +8,11 @@ use App\Models\EventCategory;
 use App\Models\EventSpeaker;
 use App\Models\EventSession;
 use App\Models\User;
-use App\Enums\EventStatus;
-use App\Enums\EventLocationType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use App\Models\EventRegistration;
 
 class EventController extends Controller
 {
@@ -137,7 +136,7 @@ class EventController extends Controller
         // 👈 ذخیره سخنرانان
         if (!empty($validated['speakers'])) {
             foreach ($validated['speakers'] as $speaker) {
-                \App\Models\EventSpeaker::create([
+                EventSpeaker::create([
                     'event_id' => $event->id,
                     'user_id'  => $speaker['user_id'],
                     'title'    => $speaker['title'] ?? null,
@@ -150,7 +149,7 @@ class EventController extends Controller
         // 👈 ذخیره جلسات
         if (!empty($validated['sessions'])) {
             foreach ($validated['sessions'] as $session) {
-                \App\Models\EventSession::create([
+                EventSession::create([
                     'event_id'     => $event->id,
                     'title'        => $session['title'],
                     'time_string'  => $session['time_string'],
@@ -285,5 +284,27 @@ class EventController extends Controller
 
         return redirect()->route('admin.events.index')
             ->with('success', 'رویداد با موفقیت حذف شد.');
+    }
+    public function registrations(Request $request, Event $event)
+    {
+        $query = $event->registrations()->with('user');
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->whereHas('user', function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('family', 'like', "%{$search}%")
+                  ->orWhere('mobile', 'like', "%{$search}%")
+                  ->orWhere('national_code', '=', $search);
+            });
+        }
+
+        $registrations = $query->orderBy('registered_at', 'desc')
+            ->paginate(20)
+            ->appends(['search' => $request->input('search')]);
+
+        $search = $request->input('search', '');
+
+        return view('admin.events.registrations', compact('event', 'registrations', 'search'));
     }
 }
