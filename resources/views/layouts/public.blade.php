@@ -13,6 +13,7 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/wiretoast@latest/dist/wiretoast.min.js" defer></script>
     <script>
         tailwind.config = {
             theme: {
@@ -282,14 +283,43 @@
 </footer>
 
 @stack('scripts')
-<x-wiretoast />
+{{-- Custom Toast Container --}}
+<div id="toast-container" class="fixed bottom-5 left-5 z-50 flex flex-col gap-3"></div>
+
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const toastContainer = document.getElementById('toast-container');
+
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            const bgColor = type === 'success' ? 'bg-emerald-500' : 'bg-red-500';
+            const icon = type === 'success' 
+                ? `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`
+                : `<svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`;
+
+            toast.className = `flex items-center gap-3 px-6 py-4 text-white ${bgColor} rounded-xl shadow-lg transition-all duration-300 transform translate-y-10 opacity-0`;
+            toast.innerHTML = `${icon} <span class="font-semibold text-sm">${message}</span>`;
+
+            toastContainer.appendChild(toast);
+
+            // انیمیشن ورود
+            setTimeout(() => {
+                toast.classList.remove('translate-y-10', 'opacity-0');
+            }, 10);
+
+            // حذف خودکار بعد از ۳ ثانیه
+            setTimeout(() => {
+                toast.classList.add('translate-y-10', 'opacity-0');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // خواندن پیام‌های لاراول
         @if(session('success'))
-            window.notify("{{ session('success') }}", "success");
+            showToast("{{ session('success') }}", "success");
         @endif
         @if(session('error'))
-            window.notify("{{ session('error') }}", "error");
+            showToast("{{ session('error') }}", "error");
         @endif
     });
 </script>

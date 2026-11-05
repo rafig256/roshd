@@ -31,6 +31,7 @@ use App\Http\Controllers\User\InnovatorRequestController as UserInnovatorRequest
 use App\Http\Controllers\User\PlanController as UserPlanController;
 use App\Http\Controllers\User\OrganizationController as UserOrganizationController;
 use App\Http\Controllers\User\OrganizationJoinRequestController as UserOrganizationJoinRequestController;
+use App\Http\Controllers\User\EventRegistrationController;
 
 // ==========================================
 // ۱. مسیرهای عمومی سایت (بدون نیاز به لاگین)
@@ -101,6 +102,9 @@ Route::middleware('auth')->name('user.')->group(function () {
 
     // درخواست عضویت در تیم‌ها (توسط کاربر)
     Route::post('/organizations/{organization}/join', [PublicOrganizationJoinRequestController::class, 'store'])->name('public.organizations.join');
+
+    // ثبت‌نام در رویدادها
+    Route::post('/events/{event}/register', [EventRegistrationController::class, 'store'])->name('events.register');
 
     // دانلود رزومه
     Route::get('/download/resume/{filename}', [FileController::class, 'downloadResume'])->name('download.resume');

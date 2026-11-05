@@ -53,6 +53,8 @@ class EventController extends Controller
             }
         ]);
 
-        return view('public.events.show', compact('event'));
+        $isRegistered = auth()->check() && $event->registrations()->where('user_id', auth()->id())->exists();
+
+        return view('public.events.show', compact('event', 'isRegistered'));
     }
 }
