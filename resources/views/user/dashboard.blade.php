@@ -241,9 +241,9 @@
                 <p class="mt-2 text-sm leading-7 text-slate-600">
                     اطلاعات شخصی، شماره موبایل و رمز عبور خود را به‌روز نگه دارید.
                 </p>
-                <a href="#"
-                   class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-emerald-700 bg-emerald-50 rounded-xl
-                          hover:bg-emerald-100 transition-colors sm:self-start">
+<a href="{{ route('user.profile.edit') }}"
+                    class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-emerald-700 bg-emerald-50 rounded-xl
+                           hover:bg-emerald-100 transition-colors sm:self-start">
                     ویرایش اطلاعات
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
                          stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -343,7 +343,32 @@
     @endif
 </div>
 
-            {{-- 4. Logout (red card) --}}
+            {{-- 5. My Events --}}
+            <div class="group flex flex-col p-7 bg-white rounded-2xl border border-slate-200
+                        hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 transition-all">
+                <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white flex items-center justify-center shadow-lg shadow-indigo-500/30">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.8"
+                         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z"/>
+                    </svg>
+                </div>
+                <h2 class="mt-5 text-lg font-bold text-slate-900">رویدادهای من</h2>
+                <p class="mt-2 text-sm leading-7 text-slate-600">
+                    لیست رویدادهایی که در آن‌ها ثبت‌نام کرده‌ید را مشاهده کنید.
+                </p>
+                <a href="{{ route('user.events.index') }}"
+                   class="mt-6 inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
+                          bg-gradient-to-l from-indigo-500 to-indigo-700 shadow-md shadow-indigo-500/30
+                          hover:shadow-lg hover:-translate-y-0.5 transition-all sm:self-start">
+                    مشاهده رویدادها
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                        <path d="M19 12H5M11 6l-6 6 6 6"/>
+                    </svg>
+                </a>
+            </div>
+
+            {{-- 6. Logout (red card) --}}
             <div class="group flex flex-col p-7 bg-red-50/60 rounded-2xl border border-red-200
                         hover:border-red-300 hover:shadow-xl hover:shadow-red-500/10 hover:-translate-y-1 transition-all">
                 <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-red-500 to-rose-600 text-white flex items-center justify-center shadow-lg shadow-red-500/30">

@@ -32,6 +32,8 @@ use App\Http\Controllers\User\PlanController as UserPlanController;
 use App\Http\Controllers\User\OrganizationController as UserOrganizationController;
 use App\Http\Controllers\User\OrganizationJoinRequestController as UserOrganizationJoinRequestController;
 use App\Http\Controllers\User\EventRegistrationController;
+use App\Http\Controllers\User\ProfileController;
+use App\Http\Controllers\User\EventController as UserEventController;
 
 // ==========================================
 // ۱. مسیرهای عمومی سایت (بدون نیاز به لاگین)
@@ -105,6 +107,13 @@ Route::middleware('auth')->name('user.')->group(function () {
 
     // ثبت‌نام در رویدادها
     Route::post('/events/{event}/register', [EventRegistrationController::class, 'store'])->name('events.register');
+
+    // پروفایل کاربری
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // رویدادهای من
+    Route::get('/my-events', [UserEventController::class, 'index'])->name('events.index');
 
     // دانلود رزومه
     Route::get('/download/resume/{filename}', [FileController::class, 'downloadResume'])->name('download.resume');
