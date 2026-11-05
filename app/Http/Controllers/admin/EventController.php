@@ -13,6 +13,7 @@ use App\Enums\EventLocationType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class EventController extends Controller
 {
@@ -41,14 +42,13 @@ class EventController extends Controller
         return view('admin.events.create', compact('users', 'categories'));
     }
 
-    public function store(Request $request)
+        public function store(Request $request)
     {
         $validated = $request->validate([
             'title'                => 'required|string|max:255',
             'slug'                 => 'nullable|string|max:255|unique:events,slug',
-            'description'          => 'nullable|string',
+            'description'          => 'required|string', // 👈 اجباری شد
             'cover_image_path'     => 'nullable|image|mimes:png,jpg,jpeg,webp|max:2048',
-            // 👇 تغییرات تاریخ در این بخش اعمال شد
             'starts_at'            => ['required', 'regex:/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/'],
             'ends_at'              => ['required', 'regex:/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/'],
             'registration_deadline'=> ['nullable', 'regex:/^\d{4}\/\d{2}\/\d{2} \d{2}:\d{2}$/'],
@@ -82,14 +82,14 @@ class EventController extends Controller
             'registration_deadline.regex' => 'تاریخ و ساعت مهلت ثبت‌نام را کامل وارد کنید.',
         ]);
 
-        // 👇 تبدیل تاریخ شمسی به میلادی
+        // تبدیل تاریخ شمسی به میلادی
         $starts = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d H:i', $validated['starts_at'])->toCarbon();
         $ends = \Morilog\Jalali\Jalalian::fromFormat('Y/m/d H:i', $validated['ends_at'])->toCarbon();
         $deadline = isset($validated['registration_deadline']) && $validated['registration_deadline'] 
             ? \Morilog\Jalali\Jalalian::fromFormat('Y/m/d H:i', $validated['registration_deadline'])->toCarbon() 
             : null;
 
-        // 👇 اعتبارسنجی منطقی
+        // اعتبارسنجی منطقی
         if ($ends->lte($starts)) {
             throw \Illuminate\Validation\ValidationException::withMessages(['ends_at' => 'زمان پایان باید بعد از شروع باشد.']);
         }
@@ -112,10 +112,10 @@ class EventController extends Controller
         $event = Event::create([
             'slug'                 => $slug,
             'title'                => $validated['title'],
-            'description'          => $validated['description'] ?? null,
+            'description'          => $validated['description'],
             'cover_image_path'     => $coverPath,
-            'starts_at'            => $starts, // 👈 استفاده از تاریخ تبدیل شده
-            'ends_at'              => $ends,   // 👈 استفاده از تاریخ تبدیل شده
+            'starts_at'            => $starts,
+            'ends_at'              => $ends,
             'location_type'        => $validated['location_type'],
             'location_address'     => $validated['location_address'] ?? null,
             'location_link'        => $validated['location_link'] ?? null,
@@ -125,13 +125,45 @@ class EventController extends Controller
             'requires_payment'     => $request->boolean('requires_payment'),
             'price_amount'         => $request->boolean('requires_payment') ? ($validated['price_amount'] ?? 0) : null,
             'price_currency'       => $validated['price_currency'] ?? 'IRT',
-            'registration_deadline'=> $deadline, // 👈 استفاده از تاریخ تبدیل شده
+            'registration_deadline'=> $deadline,
             'status'               => $validated['status'],
             'created_by'           => auth()->id(),
             'views_count'          => 0,
         ]);
 
-        // ... (بقیه کدهای مربوط به ذخیره دسته‌بندی، سخنرانان و جلسات بدون تغییر)
+        // 👈 ذخیره دسته‌بندی‌ها
+        $event->categories()->sync($validated['categories'] ?? []);
+
+        // 👈 ذخیره سخنرانان
+        if (!empty($validated['speakers'])) {
+            foreach ($validated['speakers'] as $speaker) {
+                \App\Models\EventSpeaker::create([
+                    'event_id' => $event->id,
+                    'user_id'  => $speaker['user_id'],
+                    'title'    => $speaker['title'] ?? null,
+                    'bio'      => $speaker['bio'] ?? null,
+                    'order'    => $speaker['order'] ?? 0,
+                ]);
+            }
+        }
+
+        // 👈 ذخیره جلسات
+        if (!empty($validated['sessions'])) {
+            foreach ($validated['sessions'] as $session) {
+                \App\Models\EventSession::create([
+                    'event_id'     => $event->id,
+                    'title'        => $session['title'],
+                    'time_string'  => $session['time_string'],
+                    'location'     => $session['location'] ?? null,
+                    'duration'     => $session['duration'] ?? null,
+                    'description'  => $session['description'] ?? null,
+                    'order'        => $session['order'] ?? 0,
+                ]);
+            }
+        }
+
+        return redirect()->route('admin.events.index')
+            ->with('success', 'رویداد با موفقیت ایجاد شد.');
     }
 
     public function edit(Event $event)

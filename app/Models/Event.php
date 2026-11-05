@@ -114,8 +114,8 @@ protected function displayStatus(): Attribute
 
     public function getJalaliDateOnlyAttribute()
     {
-        if (!$this->starts_at) return null;
-        $date = \Morilog\Jalali\Jalalian::fromCarbon($this->starts_at)->format('j F Y');
+        if (!$this->starts_at) return 'نامشخص';
+        $date = \Morilog\Jalali\Jalalian::fromCarbon($this->starts_at)->format('Y/m/d');
         return strtr($date, ['0'=>'۰','1'=>'۱','2'=>'۲','3'=>'۳','4'=>'۴','5'=>'۵','6'=>'۶','7'=>'۷','8'=>'۸','9'=>'۹']);
     }
 

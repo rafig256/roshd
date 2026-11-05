@@ -88,40 +88,23 @@
                 </thead>
                 <tbody class="divide-y divide-slate-100">
                     @forelse ($events as $event)
-                        @php
-                            $startsJalali = $event->starts_at
-                                ? \Morilog\Jalali\Jalalian::fromCarbon(\Carbon\Carbon::parse($event->starts_at))->format('Y/m/d H:i')
-                                : null;
-
-                            $locValue = $event->location_type instanceof \BackedEnum ? $event->location_type->value : $event->location_type;
-                            $locLabel = $locationLabels[$locValue] ?? ($locValue ?: 'نامشخص');
-                            $locClass = $locationStyles[$locValue] ?? 'bg-slate-100 text-slate-700';
-
-                            $statusValue = $event->status instanceof \BackedEnum ? $event->status->value : $event->status;
-                            $statusLabel = $event->status instanceof \App\Enums\EventStatus
-                                ? $event->status->label()
-                                : ($statusValue ?: 'نامشخص');
-                            $st = $statusStyles[$statusValue] ?? ['class' => 'bg-slate-100 text-slate-700 border-slate-200', 'dot' => 'bg-slate-400'];
-                        @endphp
                         <tr class="hover:bg-slate-50/70 transition-colors">
                             <td class="px-5 py-4 max-w-xs">
                                 <span class="font-semibold text-slate-800 line-clamp-2">{{ $event->title }}</span>
                             </td>
                             <td class="px-5 py-4 text-slate-600 whitespace-nowrap">
-                                @if ($startsJalali)
-                                    <span dir="ltr" class="inline-block">{{ $startsJalali }}</span>
-                                @else
-                                    <span class="text-slate-400">ثبت نشده</span>
-                                @endif
+                                {{ $event->jalali_date_only }}
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
+                                @php
+                                    $locValue = $event->location_type instanceof \BackedEnum ? $event->location_type->value : $event->location_type;
+                                    $locLabel = $locationLabels[$locValue] ?? ($locValue ?: 'نامشخص');
+                                    $locClass = $locationStyles[$locValue] ?? 'bg-slate-100 text-slate-700';
+                                @endphp
                                 <span class="inline-block px-3 py-1 text-xs font-semibold rounded-full {{ $locClass }}">{{ $locLabel }}</span>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full border {{ $st['class'] }}">
-                                    <span class="w-1.5 h-1.5 rounded-full {{ $st['dot'] }}"></span>
-                                    {{ $statusLabel }}
-                                </span>
+                                <span class="px-2.5 py-0.5 rounded-full text-xs font-medium {{ $event->status->badgeClasses() ?? 'bg-gray-100 text-gray-800' }}">{{ $event->status->label() ?? 'نامشخص' }}</span>
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
                                 <div class="flex items-center gap-2">
