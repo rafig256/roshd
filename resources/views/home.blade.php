@@ -269,29 +269,31 @@
                                         hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-1 transition-all">
 
                             {{-- Banner --}}
-                            <a href="{{ route('public.events.show', $event->slug) }}"
-                                class="block relative h-48 overflow-hidden bg-gradient-to-br from-indigo-500 to-fuchsia-600"
+                            <a href="{{ route('public.events.show', $event->slug) }}" class="block relative aspect-[3/4] w-full overflow-hidden bg-slate-50 rounded-t-2xl">
+                                
                                 @if ($event->cover_image_path)
-                                    <img src="{{ route('file.event-cover', basename($event->cover_image_path)) }}" alt="{{ $event->title }}" loading="lazy"
-                                        class="absolute inset-0 w-full h-full object-cover {{ in_array($event->status, [\App\Enums\EventStatus::Finished, \App\Enums\EventStatus::Cancelled]) ? 'grayscale-[40%]' : '' }}">
+                                    <img src="{{ route('file.event-cover', basename($event->cover_image_path)) }}" 
+                                        alt="{{ $event->title }}" 
+                                        loading="lazy"
+                                        class="w-full h-full object-cover">
                                 @else
+                                    {{-- کدهای مربوط به گرادیان یا آیکون در صورت نداشتن عکس --}}
+                                    <div class="absolute inset-0 bg-gradient-to-br {{ $event->id % 3 == 0 ? 'from-indigo-500 to-indigo-800' : ($event->id % 3 == 1 ? 'from-fuchsia-500 to-pink-700' : 'from-emerald-500 to-teal-700') }}"></div>
                                     <div class="absolute -top-10 -right-10 w-40 h-40 rounded-full bg-white/15"></div>
                                     <div class="absolute -bottom-12 -left-8 w-36 h-36 rounded-full bg-white/10"></div>
-                                    <div class="absolute inset-0 flex items-center justify-center">
-                                        <svg class="w-14 h-14 text-white/70" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M8 7V3m8 4V3M4 11h16M5 5h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V6a1 1 0 011-1z"/></svg>
-                                    </div>
                                 @endif
 
+                                {{-- بج‌های وضعیت و مکان --}}
                                 <span class="absolute top-3 right-3 inline-flex items-center gap-1.5 px-3 py-1 text-xs font-bold rounded-full shadow-sm {{ $event->status->badgeClasses() }}">
-                                <span class="w-1.5 h-1.5 rounded-full {{ $event->status->dotColor() }}"></span>
+                                    <span class="w-1.5 h-1.5 rounded-full {{ $event->status->dotColor() }}"></span>
                                     {{ $event->status->label() }}
                                 </span>
+                                
                                 <span class="absolute top-3 left-3 px-3 py-1 text-xs font-semibold text-white bg-black/40 backdrop-blur rounded-full">
                                     @if($event->location_type->value === 'physical') حضوری
                                     @elseif($event->location_type->value === 'online') آنلاین
                                     @else ترکیبی @endif
                                 </span>
-                                
                             </a>
 
 {{-- Body --}}
