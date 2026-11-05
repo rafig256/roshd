@@ -221,24 +221,6 @@
 </section>
 
 {{-- ============ 5. Events (slider) ============ --}}
-@php
-
-    $locationLabels = ['physical' => 'حضوری', 'online' => 'آنلاین', 'hybrid' => 'ترکیبی'];
-
-    $gradients = [
-        'from-indigo-500 to-indigo-800', 'from-fuchsia-500 to-pink-700', 'from-emerald-500 to-teal-700',
-        'from-orange-400 to-rose-600',   'from-cyan-500 to-blue-700',    'from-violet-500 to-purple-800',
-    ];
-
-    $icons = [
-        'clock'    => 'M12 6v6l4 2M12 21a9 9 0 100-18 9 9 0 000 18z',
-        'mic'      => 'M12 14a3 3 0 003-3V6a3 3 0 10-6 0v5a3 3 0 003 3zM19 11a7 7 0 01-14 0M12 18v3',
-        'topic'    => 'M7 8h10M7 12h10M7 16h6M5 4h14a1 1 0 011 1v14a1 1 0 01-1 1H5a1 1 0 01-1-1V5a1 1 0 011-1z',
-        'pin'      => 'M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z',
-        'ticket'   => 'M3 9a2 2 0 002-2h14a2 2 0 002 2v0a2 2 0 000 6v0a2 2 0 00-2 2H5a2 2 0 00-2-2v0a2 2 0 000-6zM13 7v10',
-        'users'    => 'M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 20a8 8 0 0116 0',
-    ];
-@endphp
 
 <section id="events" class="py-20 lg:py-28 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -288,7 +270,7 @@
 
                             {{-- Banner --}}
                             <a href="{{ route('public.events.show', $event->slug) }}"
-                               class="block relative h-48 overflow-hidden bg-gradient-to-br {{ $gradients[$event->id % count($gradients)] }}">
+                                class="block relative h-48 overflow-hidden bg-gradient-to-br from-indigo-500 to-fuchsia-600"
                                 @if ($event->cover_image_path)
                                     <img src="{{ route('file.event-cover', basename($event->cover_image_path)) }}" alt="{{ $event->title }}" loading="lazy"
                                         class="absolute inset-0 w-full h-full object-cover {{ in_array($event->status, [\App\Enums\EventStatus::Finished, \App\Enums\EventStatus::Cancelled]) ? 'grayscale-[40%]' : '' }}">
@@ -312,29 +294,76 @@
                                 
                             </a>
 
-                            {{-- Body --}}
+{{-- Body --}}
                             <div class="flex-1 flex flex-col p-6">
                                 <h3 class="text-base font-bold leading-7 text-slate-900 line-clamp-2 min-h-[3.5rem] group-hover:text-indigo-600 transition-colors">
                                     <a href="{{ route('public.events.show', $event->slug) }}">{{ $event->title }}</a>
                                 </h3>
                                 
                                 <dl class="mt-4 space-y-3">                            
-                                    <div class="flex items-start gap-3">
-                                        <span class="mt-0.5 w-8 h-8 shrink-0 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="ticket"/></svg>
-                                        </span>
-                                        <div class="min-w-0">
-                                            <dt class="text-xs text-slate-400">لیبل</dt>
-                                            <dd class="text-sm font-medium leading-6 text-slate-700 line-clamp-2">
-                                                مقدار
-                                            </dd>
+                                    @if ($event->starts_at)
+                                        <div class="flex items-start gap-3">
+                                            <span class="mt-0.5 w-8 h-8 shrink-0 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 6v6l4 2M12 21a9 9 0 100-18 9 9 0 000 18z"/></svg>
+                                            </span>
+                                            <div class="min-w-0">
+                                                <dt class="text-xs text-slate-400">شروع</dt>
+                                                <dd class="text-sm font-medium leading-6 text-slate-700 line-clamp-2">
+                                                    {{ $event->jalali_date_only }}
+                                                </dd>
+                                            </div>
                                         </div>
-                                    </div>
-                                </dl>
+                                    @endif
+                                    
+                                    @if ($event->speakers->isNotEmpty())
+                                        <div class="flex items-start gap-3">
+                                            <span class="mt-0.5 w-8 h-8 shrink-0 rounded-lg bg-fuchsia-50 text-fuchsia-600 flex items-center justify-center">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 14a3 3 0 003-3V6a3 3 0 10-6 0v5a3 3 0 003 3zM19 11a7 7 0 01-14 0M12 18v3"/></svg>
+                                            </span>
+                                            <div class="min-w-0">
+                                                <dt class="text-xs text-slate-400">سخنرانان</dt>
+                                                <dd class="text-sm font-medium leading-6 text-slate-700 line-clamp-2">
+                                                    {{ $event->speakers->map(fn ($s) => trim(($s->user->name ?? '') . ' ' . ($s->user->family ?? '')))->filter()->take(3)->implode('، ') }}
+                                                    @if ($event->speakers->count() > 3)
+                                                        و {{ $event->speakers->count() - 3 }} نفر دیگر
+                                                    @endif
+                                                </dd>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    
+                                    @if ($event->location_address)
+                                        <div class="flex items-start gap-3">
+                                            <span class="mt-0.5 w-8 h-8 shrink-0 rounded-lg bg-cyan-50 text-cyan-600 flex items-center justify-center">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.8 7 11 7 11zM12 12.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z"/></svg>
+                                            </span>
+                                            <div class="min-w-0">
+                                                <dt class="text-xs text-slate-400">آدرس</dt>
+                                                <dd class="text-sm font-medium leading-6 text-slate-700 line-clamp-2">
+                                                    {{ $event->location_address }}
+                                                </dd>
+                                            </div>
+                                        </div>
+                                    @endif
+                                    
+                                    @if ($event->capacity)
+                                        <div class="flex items-start gap-3">
+                                            <span class="mt-0.5 w-8 h-8 shrink-0 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 20a8 8 0 0116 0"/></svg>
+                                            </span>
+                                            <div class="min-w-0">
+                                                <dt class="text-xs text-slate-400">ظرفیت</dt>
+                                                <dd class="text-sm font-medium leading-6 text-slate-700 line-clamp-2">
+                                                    {{ $event->capacity }} نفر
+                                                </dd>
+                                            </div>
+                                        </div>
+                                    @endif
                                 
-                                @if (!$event->starts_at)
-                                    <p class="mt-3 px-3 py-2 text-xs text-amber-700 bg-amber-50 rounded-lg">زمان برگزاری به‌زودی اعلام می‌شود.</p>
-                                @endif
+                                    @if (!$event->starts_at)
+                                        <p class="mt-3 px-3 py-2 text-xs text-amber-700 bg-amber-50 rounded-lg">زمان برگزاری به‌زودی اعلام می‌شود.</p>
+                                    @endif
+                                 </dl>
 
                                 {{-- Action (همیشه پایین کارت) --}}
                                 <div class="mt-auto pt-6">

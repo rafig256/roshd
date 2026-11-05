@@ -83,7 +83,7 @@ class Event extends Model
         return $this->hasMany(EventRegistration::class, 'event_id');
     }
 
-    protected function displayStatus(): Attribute
+protected function displayStatus(): Attribute
     {
         return Attribute::get(function () {
             $status = $this->status instanceof \BackedEnum ? $this->status->value : $this->status;
@@ -97,22 +97,29 @@ class Event extends Model
         });
     }
 
-        // این متد تاریخ شمسی آماده را برمی‌گرداند
+    // این متد تاریخ شمسی آماده را برمی‌گرداند
     public function getJalaliDateAttribute()
-        {
-            if (!$this->starts_at) return null;
-            
-            $date = \Morilog\Jalali\Jalalian::fromCarbon($this->starts_at);
-            $formattedDate = $date->format('j F Y');
-            
-            // تبدیل اعداد به فارسی
-            $formattedDate = strtr($formattedDate, ['0'=>'۰','1'=>'۱','2'=>'۲','3'=>'۳','4'=>'۴','5'=>'۵','6'=>'۶','7'=>'۷','8'=>'۸','9'=>'۹']);
-            $time = strtr($this->starts_at->format('H:i'), ['0'=>'۰','1'=>'۱','2'=>'۲','3'=>'۳','4'=>'۴','5'=>'۵','6'=>'۶','7'=>'۷','8'=>'۸','9'=>'۹']);
-            
-            return $formattedDate . ' - ساعت ' . $time;
-        }
+    {
+        if (!$this->starts_at) return null;
+        
+        $date = \Morilog\Jalali\Jalalian::fromCarbon($this->starts_at);
+        $formattedDate = $date->format('j F Y');
+        
+        // تبدیل اعداد به فارسی
+        $formattedDate = strtr($formattedDate, ['0'=>'۰','1'=>'۱','2'=>'۲','3'=>'۳','4'=>'۴','5'=>'۵','6'=>'۶','7'=>'۷','8'=>'۸','9'=>'۹']);
+        $time = strtr($this->starts_at->format('H:i'), ['0'=>'۰','1'=>'۱','2'=>'۲','3'=>'۳','4'=>'۴','5'=>'۵','6'=>'۶','7'=>'۷','8'=>'۸','9'=>'۹']);
+        
+        return $formattedDate . ' - ساعت ' . $time;
+    }
 
-            // بررسی اینکه آیا رویداد در حال ثبت‌نام است
+    public function getJalaliDateOnlyAttribute()
+    {
+        if (!$this->starts_at) return null;
+        $date = \Morilog\Jalali\Jalalian::fromCarbon($this->starts_at)->format('j F Y');
+        return strtr($date, ['0'=>'۰','1'=>'۱','2'=>'۲','3'=>'۳','4'=>'۴','5'=>'۵','6'=>'۶','7'=>'۷','8'=>'۸','9'=>'۹']);
+    }
+
+    // بررسی اینکه آیا رویداد در حال ثبت‌نام است
     public function isRegistering()
     {
         // اگر ثبت‌نام نیاز نباشد، همیشه باز است
