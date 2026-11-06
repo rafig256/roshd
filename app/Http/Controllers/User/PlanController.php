@@ -12,6 +12,10 @@ class PlanController extends Controller
 {
     public function create()
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if (!auth()->user()->is_innovator) {
             return redirect()->route('user.dashboard')
                 ->with('error', 'برای ثبت طرح، ابتدا باید درخواست فناوری شما تأیید شود.');
@@ -27,6 +31,10 @@ class PlanController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if (!auth()->user()->is_innovator) {
             return redirect()->route('user.dashboard')
                 ->with('error', 'برای ثبت طرح، ابتدا باید درخواست فناوری شما تأیید شود.');
@@ -77,6 +85,10 @@ class PlanController extends Controller
 
     public function update(Request $request, Plan $plan)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if ($plan->innovator_id !== auth()->id()) {
             abort(403);
         }

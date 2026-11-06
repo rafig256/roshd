@@ -59,6 +59,7 @@
                         <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">وضعیت</th>
                         <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">نقش‌ها</th>
                         <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">فناور؟</th>
+                        <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">مسدود/آزاد</th>
                         <th class="px-6 py-3 text-right text-sm font-semibold text-slate-700 w-20">عملیات</th>
                     </tr>
                 </thead>
@@ -87,6 +88,13 @@
                                     {{ $user->is_innovator ? 'بله' : 'خیر' }}
                                 </span>
                             </td>
+                            <td class="px-6 py-4">
+                                @if ($user->status === 'blocked')
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-700">مسدود</span>
+                                @else
+                                    <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-700">فعال</span>
+                                @endif
+                            </td>
                             <td class="px-6 py-4 text-right">
                                 <div class="flex items-center gap-2 justify-end">
                                     <a href="{{ route('admin.users.edit', $user->id) }}"
@@ -98,6 +106,33 @@
                                         </svg>
                                         ویرایش
                                     </a>
+                                    
+                                    {{-- Block/Unblock Button --}}
+                                    <form action="{{ route('admin.users.toggle-block', $user->id) }}" method="POST" class="inline-block">
+                                        @csrf
+                                        @if ($user->status === 'blocked')
+                                            <button type="submit"
+                                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-emerald-600 bg-emerald-50 rounded-md hover:bg-emerald-100 transition-colors"
+                                                    onclick="return confirm('آیا از آزاد کردن این کاربر مطمئن هستید؟');">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2"
+                                                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                    <path d="M12 15v-9m0 0l-3 3m3-3l3 3m-3-3h9"/>
+                                                </svg>
+                                                آزاد کردن
+                                            </button>
+                                        @else
+                                            <button type="submit"
+                                                    class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium text-red-600 bg-red-50 rounded-md hover:bg-red-100 transition-colors"
+                                                    onclick="return confirm('آیا از مسدود کردن این کاربر مطمئن هستید؟');">
+                                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2"
+                                                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                                                    <path d="M6 18L18 6M6 6l12 12"/>
+                                                </svg>
+                                                مسدود کردن
+                                            </button>
+                                        @endif
+                                    </form>
+                                    
                                     @if(auth()->id() !== $user->id)
                                     <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST"
                                           onsubmit="return confirm('آیا از حذف این کاربر مطمئن هستید؟')"

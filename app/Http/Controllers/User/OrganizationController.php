@@ -11,11 +11,16 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\OrganizationMember;
 use Morilog\Jalali\CalendarUtils;
 use App\Enums\OrganizationStatus;
+use Illuminate\Support\Facades\Auth;
 
 class OrganizationController extends Controller
 {
     public function create()
     {
+        if (Auth::user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if (!auth()->user()->is_innovator) {
             return back()->with('error', 'برای ایجاد تیم، ابتدا باید درخواست فناوری شما تأیید شود.');
         }
@@ -39,6 +44,10 @@ class OrganizationController extends Controller
 
     public function store(Request $request)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if (!auth()->user()->is_innovator) {
             return back()->with('error', 'برای ایجاد تیم، ابتدا باید درخواست فناوری شما تأیید شود.');
         }
@@ -120,6 +129,10 @@ class OrganizationController extends Controller
 
     public function update(Request $request, Organization $organization)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if ($organization->representative_id !== auth()->id()) {
             abort(403);
         }
@@ -150,6 +163,10 @@ class OrganizationController extends Controller
 
     public function updateMemberPosition(Request $request, Organization $organization, OrganizationMember $member)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if ($organization->representative_id !== auth()->id()) {
             abort(403);
         }
@@ -171,6 +188,10 @@ class OrganizationController extends Controller
 
     public function removeMember(Organization $organization, OrganizationMember $member)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if ($organization->representative_id !== auth()->id()) {
             abort(403);
         }
@@ -207,6 +228,10 @@ class OrganizationController extends Controller
 
     public function convertToCompany(Request $request, Organization $organization)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if ($organization->representative_id !== auth()->id()) {
             abort(403);
         }

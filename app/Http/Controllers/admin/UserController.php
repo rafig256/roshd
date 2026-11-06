@@ -106,4 +106,18 @@ class UserController extends Controller
 
         return back()->with('success', 'کاربر با موفقیت حذف شد.');
     }
+
+    public function toggleBlock(User $user)
+    {
+        if ($user->id === auth()->id()) {
+            return back()->with('error', 'نمی‌توانید خودتان را مسدود کنید.');
+        }
+
+        $newStatus = $user->status === 'blocked' ? 'active' : 'blocked';
+        $user->update(['status' => $newStatus]);
+
+        $message = $newStatus === 'blocked' ? 'کاربر با موفقیت مسدود شد.' : 'مسدودیت کاربر برداشته شد.';
+        
+        return back()->with('success', $message);
+    }
 }

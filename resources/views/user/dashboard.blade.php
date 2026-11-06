@@ -11,6 +11,20 @@
 
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
 
+        {{-- Blocked Warning --}}
+        @if(auth()->user()->isBlocked())
+            <div class="mb-8 flex items-center gap-3 px-4 py-3 text-sm text-red-800 bg-red-50 border border-red-200 rounded-xl">
+                <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M12 9v2m0 4h.01M12 21a9 9 0 110-18 9 9 0 010 18z"/>
+                </svg>
+                <div>
+                    <p class="font-semibold">حساب کاربری شما مسدود شده است.</p>
+                    <p class="text-sm">امکان انجام بسیاری از عملیات (ثبت‌نام رویداد، مدیریت تیم، ثبت طرح) برای شما وجود ندارد.</p>
+                </div>
+            </div>
+        @endif
+
         {{-- Welcome header --}}
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div class="flex items-center gap-4">

@@ -17,7 +17,8 @@
     $hasPendingRequest = $hasPendingRequest ?? false;
 
     // آیا مودال باید نمایش داده شود؟
-    $canRequest = auth()->check() && !$isMember && !$isRepresentative && !$hasPendingRequest;
+    $canRequest = auth()->check() && !$isMember && !$isRepresentative && !$hasPendingRequest && !auth()->user()->isBlocked();
+    $isBlocked = auth()->check() && auth()->user()->isBlocked();
 @endphp
 
 <section class="relative overflow-hidden bg-gradient-to-b from-indigo-50 via-white to-white min-h-[calc(100vh-5rem)]">
@@ -167,7 +168,7 @@
                         </a>
                     @endguest
 
-                    @auth
+@auth
                         @if ($isMember)
                             <p class="mt-4 flex items-start gap-2 px-4 py-3 text-sm font-semibold leading-7 text-emerald-800 bg-emerald-100 rounded-xl">
                                 <svg class="w-5 h-5 mt-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
@@ -175,11 +176,16 @@
                             </p>
                         @elseif ($isRepresentative)
                             <p class="mt-4 px-4 py-3 text-sm font-semibold leading-7 text-slate-700 bg-slate-100 rounded-xl">
-                                شما نماینده یک تیم هستید و نمی‌توانید در تیم دیگری درخواست دهید.
+                                شما نمایده یک تیم هستید و نمی‌توانید در تیم دیگری درخواست دهید.
                             </p>
                         @elseif ($hasPendingRequest)
                             <p class="mt-4 px-4 py-3 text-sm font-semibold leading-7 text-amber-800 bg-amber-100 rounded-xl">
                                 درخواست شما در حال بررسی است.
+                            </p>
+                        @elseif (auth()->user()->isBlocked())
+                            <p class="mt-4 px-4 py-3 text-sm font-semibold leading-7 text-red-800 bg-red-100 rounded-xl">
+                                <svg class="w-5 h-5 mt-1 shrink-0" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M12 21a9 9 0 110-18 9 9 0 010 18z"/></svg>
+                                حساب کاربری شما مسدود شده است. امکان ارسال درخواست عضویت وجود ندارد.
                             </p>
                         @else
                             <p class="mt-2 text-sm leading-7 text-slate-600">

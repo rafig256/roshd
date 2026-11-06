@@ -91,33 +91,46 @@
 
                 <div class="flex flex-col items-stretch sm:items-end gap-2 shrink-0">
 
-                    <a href="{{ route('user.organizations.edit', $organization->id) }}"
-                    class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-indigo-700 bg-indigo-50 rounded-xl
-                            hover:bg-indigo-100 transition-colors">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M16 3l5 5L8 21H3v-5L16 3z"/></svg>
-                        ویرایش اطلاعات تیم
-                    </a>
-
-                    @if ($orgStatusValue === 'team')
-                        <a href="{{ route('user.organizations.convert-to-company', $organization->id) }}"
-                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
-                                bg-gradient-to-l from-indigo-600 to-fuchsia-500 shadow-md shadow-indigo-500/30
-                                hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 7h2M13 7h2M9 11h2M13 11h2M10 21v-4h4v4"/></svg>
-                            درخواست تبدیل به شرکت
+                    @if (!auth()->user()->isBlocked())
+                        <a href="{{ route('user.organizations.edit', $organization->id) }}"
+                        class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-indigo-700 bg-indigo-50 rounded-xl
+                                hover:bg-indigo-100 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M16 3l5 5L8 21H3v-5L16 3z"/></svg>
+                            ویرایش اطلاعات تیم
                         </a>
-                    @elseif ($orgStatusValue === 'pending_company')
-                        <span class="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-amber-800 bg-amber-100 border border-amber-200 rounded-xl">
-                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                            درخواست تبدیل به شرکت در حال بررسی است.
-                        </span>
-                    @elseif ($orgStatusValue === 'company')
-                        <span class="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 rounded-xl">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-                            شرکت رسمی
-                        </span>
+
+                        @if ($orgStatusValue === 'team')
+                            <a href="{{ route('user.organizations.convert-to-company', $organization->id) }}"
+                            class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-white rounded-xl
+                                    bg-gradient-to-l from-indigo-600 to-fuchsia-500 shadow-md shadow-indigo-500/30
+                                    hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M3 21h18M5 21V5a2 2 0 012-2h10a2 2 0 012 2v16M9 7h2M13 7h2M9 11h2M13 11h2M10 21v-4h4v4"/></svg>
+                                درخواست تبدیل به شرکت
+                            </a>
+                        @elseif ($orgStatusValue === 'pending_company')
+                            <span class="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-amber-800 bg-amber-100 border border-amber-200 rounded-xl">
+                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                درخواست تبدیل به شرکت در حال بررسی است.
+                            </span>
+                        @elseif ($orgStatusValue === 'company')
+                            <span class="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 rounded-xl">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                                شرکت رسمی
+                            </span>
+                        @endif
+                    @else
+                        <div class="flex flex-col items-stretch sm:items-end gap-2 shrink-0">
+                            <button type="button" disabled
+                                    class="inline-flex items-center justify-center gap-2 px-5 py-2.5 text-sm font-bold text-slate-400 bg-slate-100 rounded-xl cursor-not-allowed">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M16 3l5 5L8 21H3v-5L16 3z"/></svg>
+                                ویرایش اطلاعات تیم (حساب مسدود)
+                            </button>
+                            <span class="inline-flex items-center justify-center gap-2 px-4 py-2 text-xs font-bold text-red-800 bg-red-100 border border-red-200 rounded-xl">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M12 21a9 9 0 110-18 9 9 0 010 18z"/></svg>
+                                حساب شما مسدود است - امکان انجام عملیات وجود ندارد
+                            </span>
+                        </div>
                     @endif
-                </div>
             </div>
         </div>
 
@@ -200,21 +213,32 @@
                                 </div>
 
                                 <div class="flex items-center gap-2 shrink-0">
-                                    <form method="POST" action="{{ route('user.organizations.join-requests.approve', [$organization->id, $joinRequest->id]) }}">
-                                        @csrf
-                                        <button type="submit"
-                                                class="px-4 py-2 text-xs font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors">
-                                            تأیید
+                                    @if (!auth()->user()->isBlocked())
+                                        <form method="POST" action="{{ route('user.organizations.join-requests.approve', [$organization->id, $joinRequest->id]) }}">
+                                            @csrf
+                                            <button type="submit"
+                                                    class="px-4 py-2 text-xs font-bold text-white bg-emerald-600 rounded-lg hover:bg-emerald-700 transition-colors">
+                                                تأیید
+                                            </button>
+                                        </form>
+                                        <form method="POST" action="{{ route('user.organizations.join-requests.reject', [$organization->id, $joinRequest->id]) }}"
+                                              onsubmit="return confirm('آیا از رد این درخواست مطمئن هستید؟');">
+                                            @csrf
+                                            <button type="submit"
+                                                    class="px-4 py-2 text-xs font-bold text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                                                رد
+                                            </button>
+                                        </form>
+                                    @else
+                                        <button type="button" disabled
+                                                class="px-4 py-2 text-xs font-bold text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed">
+                                            تأیید (مسدود)
                                         </button>
-                                    </form>
-                                    <form method="POST" action="{{ route('user.organizations.join-requests.reject', [$organization->id, $joinRequest->id]) }}"
-                                          onsubmit="return confirm('آیا از رد این درخواست مطمئن هستید؟');">
-                                        @csrf
-                                        <button type="submit"
-                                                class="px-4 py-2 text-xs font-bold text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
-                                            رد
+                                        <button type="button" disabled
+                                                class="px-4 py-2 text-xs font-bold text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed">
+                                            رد (مسدود)
                                         </button>
-                                    </form>
+                                    @endif
                                 </div>
                             </li>
                         @endforeach
@@ -275,36 +299,56 @@
 
                                         {{-- Position (inline update form) --}}
                                         <td class="px-5 py-4">
-                                            <form method="POST"
-                                                  action="{{ route('user.organizations.members.update', [$organization->id, $member->id]) }}"
-                                                  class="flex items-center gap-2 min-w-[16rem]">
-                                                @csrf
-                                                @method('PUT')
-                                                <input type="text" name="position" value="{{ $member->position }}"
-                                                       maxlength="100" placeholder="سمت (مثلاً توسعه‌دهنده)"
-                                                       aria-label="سمت {{ $memName }}"
-                                                       class="flex-1 min-w-0 px-3 py-2 text-xs rounded-lg border border-slate-300 bg-slate-50 placeholder:text-slate-400
-                                                              focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-                                                <button type="submit"
-                                                        class="px-3.5 py-2 text-xs font-bold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
-                                                    ذخیره
-                                                </button>
-                                            </form>
+                                            @if (!auth()->user()->isBlocked())
+                                                <form method="POST"
+                                                      action="{{ route('user.organizations.members.update', [$organization->id, $member->id]) }}"
+                                                      class="flex items-center gap-2 min-w-[16rem]">
+                                                    @csrf
+                                                    @method('PUT')
+                                                    <input type="text" name="position" value="{{ $member->position }}"
+                                                           maxlength="100" placeholder="سمت (مثلاً توسعه‌دهنده)"
+                                                           aria-label="سمت {{ $memName }}"
+                                                           class="flex-1 min-w-0 px-3 py-2 text-xs rounded-lg border border-slate-300 bg-slate-50 placeholder:text-slate-400
+                                                                      focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
+                                                    <button type="submit"
+                                                            class="px-3.5 py-2 text-xs font-bold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                                                        ذخیره
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <div class="flex items-center gap-2 min-w-[16rem]">
+                                                    <input type="text" value="{{ $member->position }}" disabled
+                                                           maxlength="100" placeholder="سمت (مثلاً توسعه‌دهنده)"
+                                                           aria-label="سمت {{ $memName }}"
+                                                           class="flex-1 min-w-0 px-3 py-2 text-xs rounded-lg border border-slate-300 bg-slate-100 placeholder:text-slate-400 cursor-not-allowed">
+                                                    <button type="button" disabled
+                                                            class="px-3.5 py-2 text-xs font-bold text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed">
+                                                        ذخیره (مسدود)
+                                                    </button>
+                                                </div>
+                                            @endif
                                         </td>
 
                                         {{-- Remove (not for representative) --}}
                                         <td class="px-5 py-4 whitespace-nowrap">
                                             @unless ($isRep)
-                                                <form method="POST"
-                                                      action="{{ route('user.organizations.members.destroy', [$organization->id, $member->id]) }}"
-                                                      onsubmit="return confirm('آیا از حذف این عضو از تیم مطمئن هستید؟');">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit"
-                                                            class="px-3.5 py-2 text-xs font-bold text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
-                                                        حذف
+                                                @if (!auth()->user()->isBlocked())
+                                                    <form method="POST"
+                                                          action="{{ route('user.organizations.members.destroy', [$organization->id, $member->id]) }}"
+                                                          onsubmit="return confirm('آیا از حذف این عضو از تیم مطمئن هستید؟');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit"
+                                                                class="px-3.5 py-2 text-xs font-bold text-red-700 bg-red-50 rounded-lg hover:bg-red-100 transition-colors">
+                                                            حذف
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <button type="button" disabled
+                                                            class="px-3.5 py-2 text-xs font-bold text-slate-400 bg-slate-100 rounded-lg cursor-not-allowed">
+                                                        حذف (مسدود)
                                                     </button>
-                                                </form>
+                                                @endif
                                             @else
                                                 <span class="text-xs text-slate-400">—</span>
                                             @endunless

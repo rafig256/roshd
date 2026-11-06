@@ -247,17 +247,12 @@
                             </a>
 
                         {{-- ۳. کاربر واردشده، ثبت‌نام‌نکرده، رویداد رایگان --}}
-                        @else
-                            <form method="POST" action="{{ route('user.events.register', $event->id) }}">
-                                @csrf
-                                <button type="submit"
-                                        class="block w-full py-3 text-center text-sm font-bold text-white rounded-xl bg-gradient-to-l from-indigo-600 to-fuchsia-500
-                                            shadow-md shadow-indigo-500/30 hover:shadow-lg hover:-translate-y-0.5
-                                            focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
-                                    ثبت‌نام در رویداد
-                                </button>
-                            </form>
-                        @endif
+                        @if (auth()->check() && auth()->user()->isBlocked())
+                            <button type="button" disabled
+                                    class="w-full inline-flex items-center justify-center gap-2 py-3 text-sm font-bold text-red-600 bg-red-100 border border-red-200 rounded-xl cursor-not-allowed">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M12 21a9 9 0 110-18 9 9 0 010 18z"/></svg>
+                                حساب شما مسدود است - امکان ثبت‌نام وجود ندارد
+                            </button>
                     </div>
                 </div>
             </aside>

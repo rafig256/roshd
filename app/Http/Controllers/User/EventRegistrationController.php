@@ -13,6 +13,10 @@ class EventRegistrationController extends Controller
 {
     public function store(Request $request, Event $event)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if (!auth()->check()) {
             return redirect()->route('login')->with('error', 'برای ثبت‌نام باید وارد حساب کاربری خود شوید.');
         }

@@ -47,4 +47,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(InnovatorRequest::class);
     }
+
+    public function isBlocked(): bool
+    {
+        return $this->status === 'blocked';
+    }
 }

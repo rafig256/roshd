@@ -13,6 +13,10 @@ class OrganizationJoinRequestController extends Controller
 {
     public function approve(Organization $organization, OrganizationJoinRequest $joinRequest)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if ($organization->representative_id !== auth()->id()) {
             abort(403);
         }
@@ -44,6 +48,10 @@ class OrganizationJoinRequestController extends Controller
 
     public function reject(Request $request, Organization $organization, OrganizationJoinRequest $joinRequest)
     {
+        if (auth()->user()->isBlocked()) {
+            return back()->with('error', 'حساب کاربری شما مسدود است و امکان انجام این عملیات را ندارید.');
+        }
+
         if ($organization->representative_id !== auth()->id()) {
             abort(403);
         }
