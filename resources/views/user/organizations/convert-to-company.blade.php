@@ -65,6 +65,15 @@
                   class="p-6 sm:p-8 space-y-6" novalidate>
                 @csrf
 
+                {{-- Previous Rejection Notice --}}
+                @if($organization->company_rejection_reason)
+                    <div class="p-4 bg-red-50 border border-red-200 rounded-xl">
+                        <p class="font-semibold text-red-800">درخواست قبلی شما برای تبدیل به شرکت رد شده بود.</p>
+                        <p class="mt-1 text-sm text-red-700">دلیل رد: {{ $organization->company_rejection_reason }}</p>
+                        <p class="mt-2 text-sm text-red-600">می‌توانید اطلاعات را اصلاح کرده و مجدداً ارسال کنید.</p>
+                    </div>
+                @endif
+
                 {{-- Legal name --}}
                 <div>
                     <label for="legal_name" class="block mb-2 text-sm font-medium text-slate-700">

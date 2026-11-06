@@ -318,6 +318,15 @@
                 </span>
             </div>
         </div>
+        
+        {{-- Show Company Rejection Reason --}}
+        @if($latestOrganization->status === \App\Enums\OrganizationStatus::Team && $latestOrganization->company_rejection_reason)
+            <div class="mt-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                <p class="font-semibold text-red-800">درخواست تبدیل به شرکت شما رد شد.</p>
+                <p class="mt-1 text-sm text-red-700">دلیل رد: {{ $latestOrganization->company_rejection_reason }}</p>
+            </div>
+        @endif
+
         @if ($expiresJalali)
                 <p class="mt-0.5 text-xs {{ $isExpired ? 'font-bold text-red-600' : 'text-slate-500' }}">
                     اعتبار تیم تا:
