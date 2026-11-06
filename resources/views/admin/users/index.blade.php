@@ -56,7 +56,6 @@
                         <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">نام و نام خانوادگی</th>
                         <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">کد ملی</th>
                         <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">موبایل</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">وضعیت</th>
                         <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">نقش‌ها</th>
                         <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">فناور؟</th>
                         <th class="px-6 py-3 text-left text-sm font-semibold text-slate-700">مسدود/آزاد</th>
@@ -69,16 +68,6 @@
                             <td class="px-6 py-4 text-slate-800">{{ $user->name }} {{ $user->family }}</td>
                             <td class="px-6 py-4 text-slate-800" dir="ltr">{{ $user->national_code }}</td>
                             <td class="px-6 py-4 text-slate-800" dir="ltr">{{ $user->mobile }}</td>
-                            <td class="px-6 py-4">
-                                <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium
-                                           @if ($user->status === 'active') bg-emerald-100 text-emerald-700 @else bg-red-100 text-red-700 @endif">
-                                    @if ($user->status === 'active')
-                                        فعال
-                                    @else
-                                        مسدود
-                                    @endif
-                                </span>
-                            </td>
                             <td class="px-6 py-4 text-slate-800">
                                 {{ $user->roles->isNotEmpty() ? $user->roles->pluck('label')->implode(', ') : 'کاربر عادی' }}
                             </td>
@@ -155,7 +144,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="px-6 py-8 text-center text-slate-500">کاربری یافت نشد.</td>
+                            <td colspan="6" class="px-6 py-8 text-center text-slate-500">کاربری یافت نشد.</td>
                         </tr>
                     @endforelse
                 </tbody>
