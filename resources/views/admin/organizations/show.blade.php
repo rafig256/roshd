@@ -37,6 +37,16 @@
     $rep     = $organization->representative;
     $repName = trim(($rep?->name ?? '') . ' ' . ($rep?->family ?? ''));
 
+    $expiresAt     = $organization->team_expires_at ? \Carbon\Carbon::parse($organization->team_expires_at) : null;
+    $expiresJalali = $expiresAt ? \Morilog\Jalali\Jalalian::fromCarbon($expiresAt)->format('Y/m/d') : null;
+    $isExpired     = $expiresAt ? $expiresAt->copy()->endOfDay()->isPast() : false;
+
+    $canExtend = auth()->check() && (
+        auth()->user()->hasRole('super_admin')
+        || auth()->user()->hasRole('site_admin')
+        || auth()->user()->hasRole('expert')
+    );
+
     $members = $members ?? $organization->members ?? collect();
 
     // اطلاعات حقوقی: از $legal (اگر کنترلر بفرستد) یا مستقیم از خود سازمان
@@ -140,6 +150,27 @@
                     <div>
                         <dt class="text-xs text-slate-400">کد ملی نماینده</dt>
                         <dd class="mt-1 text-sm font-medium text-slate-800" dir="ltr" style="text-align:right">{{ $rep?->national_code ?? 'ثبت نشده' }}</dd>
+                    </div>
+                    <div class="sm:col-span-2">
+                        <dt class="text-xs text-slate-400">تاریخ انقضای تیم</dt>
+                        <dd class="mt-1 flex flex-wrap items-center gap-3">
+                            @if ($expiresJalali)
+                                <span dir="ltr" class="text-sm font-semibold {{ $isExpired ? 'text-red-600' : 'text-slate-800' }}">{{ $expiresJalali }}</span>
+                                @if ($isExpired)
+                                    <span class="px-2.5 py-0.5 text-[11px] font-bold text-red-700 bg-red-50 rounded-full">منقضی شده</span>
+                                @endif
+                            @else
+                                <span class="text-sm font-medium text-slate-400">نامشخص</span>
+                            @endif
+
+                            @if ($canExtend)
+                                <button type="button" id="open-extend-modal"
+                                        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 6v6l4 2M12 21a9 9 0 100-18 9 9 0 000 18z"/></svg>
+                                    تمدید اعتبار تیم
+                                </button>
+                            @endif
+                        </dd>
                     </div>
                 </div>
                 <div>
@@ -264,4 +295,82 @@
         </div>
     </div>
 </div>
+@if ($canExtend)
+    <dialog id="extend-modal"
+            class="w-full max-w-md p-0 rounded-2xl shadow-2xl backdrop:bg-slate-900/50 backdrop:backdrop-blur-sm"
+            style="margin:auto">
+        <form method="POST" action="{{ route('admin.organizations.extend-expiry', $organization->id) }}" dir="rtl" class="font-sans">
+            @csrf
+
+            <div class="px-6 py-4 border-b border-slate-200 flex items-center justify-between">
+                <h3 class="text-base font-bold text-slate-800">تمدید اعتبار تیم</h3>
+                <button type="button" id="close-extend-modal" aria-label="بستن"
+                        class="p-1.5 text-slate-400 rounded-lg hover:bg-slate-100 hover:text-slate-600 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+                </button>
+            </div>
+
+            <div class="p-6 space-y-4">
+                <p class="text-sm leading-7 text-slate-600">
+                    اعتبار فعلی:
+                    @if ($expiresJalali)
+                        <span dir="ltr" class="inline-block font-semibold text-slate-800">{{ $expiresJalali }}</span>
+                    @else
+                        <span class="font-semibold text-slate-500">نامشخص</span>
+                    @endif
+                </p>
+
+                <div>
+                    <label for="months" class="block mb-2 text-sm font-medium text-slate-700">
+                        تعداد ماه تمدید <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" id="months" name="months" value="{{ old('months', 12) }}"
+                           min="1" max="24" step="1" dir="ltr" inputmode="numeric" required
+                           class="w-full px-4 py-2.5 text-sm text-left rounded-lg border bg-slate-50
+                                  focus:bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition
+                                  @error('months') border-red-400 @else border-slate-300 @enderror">
+                    @error('months')
+                        <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p>
+                    @enderror
+                </div>
+            </div>
+
+            <div class="px-6 py-4 bg-slate-50 rounded-b-2xl flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                <button type="button" id="cancel-extend-modal"
+                        class="px-5 py-2.5 text-sm font-semibold text-slate-600 border border-slate-300 rounded-lg hover:bg-white transition-colors">
+                    انصراف
+                </button>
+                <button type="submit"
+                        class="px-5 py-2.5 text-sm font-bold text-white bg-indigo-600 rounded-lg hover:bg-indigo-700 transition-colors">
+                    تمدید
+                </button>
+            </div>
+        </form>
+    </dialog>
+
+    @push('scripts')
+    <script>
+        (function () {
+            const modal = document.getElementById('extend-modal');
+            if (!modal) return;
+
+            document.getElementById('open-extend-modal')?.addEventListener('click', () => modal.showModal());
+            document.getElementById('close-extend-modal')?.addEventListener('click', () => modal.close());
+            document.getElementById('cancel-extend-modal')?.addEventListener('click', () => modal.close());
+
+            // کلیک روی پس‌زمینه، مودال را ببندد
+            modal.addEventListener('click', (e) => {
+                const r = modal.getBoundingClientRect();
+                const inside = e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+                if (!inside) modal.close();
+            });
+
+            // اگر اعتبارسنجی شکست خورد، مودال دوباره باز شود
+            @if ($errors->has('months'))
+                modal.showModal();
+            @endif
+        })();
+    </script>
+    @endpush
+@endif
 @endsection

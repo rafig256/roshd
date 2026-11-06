@@ -255,9 +255,10 @@
             {{-- Team card --}}
 @php
     $user = auth()->user();
-
-    // این دو متغیر از کنترلر می‌آیند (پایین‌تر توضیح داده شده)
     $team        = $latestOrganization ?? null;
+    $expiresAt     = $team?->team_expires_at ? \Carbon\Carbon::parse($team->team_expires_at) : null;
+    $isExpired     = $expiresAt ? $expiresAt->copy()->endOfDay()->isPast() : false;
+    $expiresJalali = $expiresAt ? \Morilog\Jalali\Jalalian::fromCarbon($expiresAt)->format('Y/m/d') : null;
     $planStatus = $latestPlan?->status instanceof \BackedEnum ? $latestPlan->status->value : $latestPlan?->status;
     $canCreate  = $user->is_innovator && $planStatus === 'approved';
 
@@ -303,6 +304,13 @@
                 </span>
             </div>
         </div>
+        @if ($expiresJalali)
+                <p class="mt-0.5 text-xs {{ $isExpired ? 'font-bold text-red-600' : 'text-slate-500' }}">
+                    اعتبار تیم تا:
+                    <span dir="ltr" class="inline-block">{{ $expiresJalali }}</span>
+                    @if ($isExpired) (منقضی شده) @endif
+                </p>
+            @endif
         <p class="mt-3 text-sm leading-7 text-slate-600">
             اطلاعات واحد فناور، اعضا و فعالیت‌های خود را از اینجا مدیریت کنید.
         </p>

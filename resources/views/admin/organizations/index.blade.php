@@ -52,6 +52,7 @@
                         <th scope="col" class="px-5 py-3.5 font-semibold whitespace-nowrap">نام</th>
                         <th scope="col" class="px-5 py-3.5 font-semibold whitespace-nowrap">نوع / وضعیت</th>
                         <th scope="col" class="px-5 py-3.5 font-semibold whitespace-nowrap">نماینده</th>
+                        <th scope="col" class="px-5 py-3.5 font-semibold whitespace-nowrap">تاریخ انقضا</th>
                         <th scope="col" class="px-5 py-3.5 font-semibold whitespace-nowrap">عملیات</th>
                     </tr>
                 </thead>
@@ -66,6 +67,9 @@
 
                             $rep     = $organization->representative;
                             $repName = trim(($rep?->name ?? '') . ' ' . ($rep?->family ?? ''));
+                            $expiresAt     = $organization->team_expires_at ? \Carbon\Carbon::parse($organization->team_expires_at) : null;
+                            $expiresJalali = $expiresAt ? \Morilog\Jalali\Jalalian::fromCarbon($expiresAt)->format('Y/m/d') : null;
+                            $isExpired     = $expiresAt ? $expiresAt->copy()->endOfDay()->isPast() : false;
                         @endphp
                         <tr class="hover:bg-slate-50/70 transition-colors">
                             <td class="px-5 py-4">
@@ -91,6 +95,16 @@
                                 {{ $repName !== '' ? $repName : 'نامشخص' }}
                             </td>
                             <td class="px-5 py-4 whitespace-nowrap">
+                                @if ($expiresJalali)
+                                    <span dir="ltr" class="inline-block text-sm font-medium {{ $isExpired ? 'text-red-600' : 'text-slate-600' }}">{{ $expiresJalali }}</span>
+                                    @if ($isExpired)
+                                        <span class="mr-1 px-2 py-0.5 text-[11px] font-bold text-red-700 bg-red-50 rounded-full">منقضی</span>
+                                    @endif
+                                @else
+                                    <span class="text-slate-400">نامشخص</span>
+                                @endif
+                            </td>
+                            <td class="px-5 py-4 whitespace-nowrap">
                                 <a href="{{ route('admin.organizations.show', $organization->id) }}"
                                    class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-indigo-700 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
                                     <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
@@ -102,7 +116,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="px-5 py-16 text-center">
+                            <td colspan="5" class="px-5 py-16 text-center">
                                 <div class="mx-auto w-14 h-14 rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center">
                                     <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                                         <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/>

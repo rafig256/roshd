@@ -164,6 +164,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         // مدیریت سازمان‌ها (تیم‌ها و شرکت‌ها)
         Route::get('/organizations', [OrganizationController::class, 'index'])->name('organizations.index');
         Route::get('/organizations/{organization}', [OrganizationController::class, 'show'])->name('organizations.show');
+        Route::post('/organizations/{organization}/extend-expiry', [OrganizationController::class, 'extendExpiry'])->name('organizations.extend-expiry');
 
         // مدیریت دسته‌بندی اخبار
         Route::resource('news-categories', NewsCategoryController::class);
