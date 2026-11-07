@@ -369,15 +369,15 @@
 
                                 {{-- Action (همیشه پایین کارت) --}}
                                 <div class="mt-auto pt-6">
-                                    @if ($event->isRegistering())
+                                    @if ($event->status->value === 'published' && $event->isRegistering())
                                         <a href="{{ route('public.events.show', $event->slug) }}"
-                                           class="block w-full py-2.5 text-center text-sm font-bold text-white rounded-xl bg-gradient-to-l from-indigo-600 to-fuchsia-500
-                                                  shadow-md shadow-indigo-500/30 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                                        class="block w-full py-2.5 text-center text-sm font-bold text-white rounded-xl bg-gradient-to-l from-indigo-600 to-fuchsia-500
+                                                shadow-md shadow-indigo-500/30 hover:shadow-lg hover:-translate-y-0.5 transition-all">
                                             جزئیات و ثبت‌نام
                                         </a>
                                     @else
                                         <a href="{{ route('public.events.show', $event->slug) }}"
-                                           class="block w-full py-2.5 text-center text-sm font-semibold text-slate-700 border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors">
+                                        class="block w-full py-2.5 text-center text-sm font-semibold text-slate-700 border border-slate-300 rounded-xl hover:bg-slate-50 transition-colors">
                                             مشاهده جزئیات
                                         </a>
                                     @endif

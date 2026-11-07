@@ -6,6 +6,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>@yield('title', 'خانه') | مرکز نوآوری شهری</title>
     <meta name="description" content="@yield('meta_description', 'مرکز نوآوری شهری؛ شتاب‌دهنده ایده‌ها و حامی کسب‌وکارهای نوپا و کارآفرینان')">
+    <link rel="icon" href="{{ asset('fav.ico') }}" type="image/x-icon">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -41,7 +41,7 @@ class EventController extends Controller
 
     public function show(Event $event)
     {
-        if ($event->status !== EventStatus::Published) {
+        if (in_array($event->status, [\App\Enums\EventStatus::Draft, \App\Enums\EventStatus::Cancelled])) {
             abort(404);
         }
 
