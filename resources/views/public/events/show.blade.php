@@ -204,56 +204,70 @@
 
                     <div class="mt-6 pt-6 border-t border-slate-100">
 
-                        {{-- وضعیت‌های پایانی، برای همه --}}
-                        @if ($display === 'cancelled')
-                            <p class="px-4 py-3 text-sm font-semibold leading-7 text-red-800 bg-red-100 rounded-xl">این رویداد لغو شده است.</p>
+                    {{-- وضعیت‌های پایانی، برای همه --}}
+                    @if ($display === 'cancelled')
+                        <p class="px-4 py-3 text-sm font-semibold leading-7 text-red-800 bg-red-100 rounded-xl">این رویداد لغو شده است.</p>
 
-                        @elseif ($display === 'finished')
-                            <p class="px-4 py-3 text-sm font-semibold leading-7 text-slate-700 bg-slate-100 rounded-xl">این رویداد برگزار شده است.</p>
+                    @elseif ($display === 'finished')
+                        <p class="px-4 py-3 text-sm font-semibold leading-7 text-slate-700 bg-slate-100 rounded-xl">این رویداد برگزار شده است.</p>
 
-                        {{-- ۲. کاربر واردشده و قبلاً ثبت‌نام کرده --}}
-                        @elseif (auth()->check() && $isRegistered)
-                            <button type="button" disabled
-                                    class="w-full inline-flex items-center justify-center gap-2 py-3 text-sm font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 rounded-xl cursor-not-allowed">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
-                                شما در این رویداد ثبت‌نام کرده‌اید
+                    {{-- ۲. کاربر واردشده و قبلاً ثبت‌نام کرده --}}
+                    @elseif (auth()->check() && $isRegistered)
+                        <button type="button" disabled
+                                class="w-full inline-flex items-center justify-center gap-2 py-3 text-sm font-bold text-emerald-800 bg-emerald-100 border border-emerald-200 rounded-xl cursor-not-allowed">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                            شما در این رویداد ثبت‌نام کرده‌اید
+                        </button>
+
+                    {{-- ورود آزاد: نیازی به ثبت‌نام نیست (برای مهمان و کاربر) --}}
+                    @elseif (!$event->registration_required)
+                        <span class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-indigo-800 bg-indigo-100 rounded-full">
+                            <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                            ورود آزاد
+                        </span>
+
+                    {{-- مهلت ثبت‌نام تمام شده --}}
+                    @elseif ($display === 'closed')
+                        <p class="px-4 py-3 text-sm font-semibold leading-7 text-amber-800 bg-amber-100 rounded-xl">مهلت ثبت‌نام این رویداد به پایان رسیده است.</p>
+
+                    {{-- ۱. مهمان --}}
+                    @elseif (auth()->guest())
+                        <a href="{{ route('login') }}"
+                        class="block w-full py-3 text-center text-sm font-bold text-white rounded-xl bg-gradient-to-l from-indigo-600 to-fuchsia-500
+                                shadow-md shadow-indigo-500/30 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                            برای ثبت‌نام ابتدا وارد شوید
+                        </a>
+
+                    {{-- ۳. کاربر واردشده، ثبت‌نام‌نکرده، رویداد پولی --}}
+                    @elseif ($event->requires_payment)
+                        <a href="#" onclick="alert('درگاه پرداخت به زودی متصل می‌شود.'); return false;"
+                        class="block w-full py-3 text-center text-sm font-bold text-white rounded-xl bg-gradient-to-l from-indigo-600 to-fuchsia-500
+                                shadow-md shadow-indigo-500/30 hover:shadow-lg hover:-translate-y-0.5 transition-all">
+                            ثبت‌نام و پرداخت
+                        </a>
+
+                    {{-- ۴. کاربر واردشده، اما حساب او مسدود است --}}
+                    @elseif (auth()->check() && auth()->user()->isBlocked())
+                        <button type="button" disabled
+                                class="w-full inline-flex items-center justify-center gap-2 py-3 text-sm font-bold text-red-600 bg-red-100 border border-red-200 rounded-xl cursor-not-allowed">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M12 21a9 9 0 110-18 9 9 0 010 18z"/></svg>
+                            حساب شما مسدود است - امکان ثبت‌نام وجود ندارد
+                        </button>
+
+                    {{-- ۵. کاربر واردشده، ثبت‌نام‌نکرده، رویداد رایگان --}}
+                    @else
+                        <form method="POST" action="{{ route('user.events.register', $event->id) }}">
+                            @csrf
+                            <button type="submit"
+                                    class="block w-full py-3 text-center text-sm font-bold text-white rounded-xl bg-gradient-to-l from-indigo-600 to-fuchsia-500
+                                        shadow-md shadow-indigo-500/30 hover:shadow-lg hover:-translate-y-0.5
+                                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all">
+                                ثبت‌نام در رویداد
                             </button>
+                        </form>
+                    @endif
 
-                        {{-- ورود آزاد: نیازی به ثبت‌نام نیست (برای مهمان و کاربر) --}}
-                        @elseif (!$event->registration_required)
-                            <span class="inline-flex items-center gap-2 px-4 py-2 text-sm font-bold text-indigo-800 bg-indigo-100 rounded-full">
-                                <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
-                                ورود آزاد
-                            </span>
-
-                        {{-- مهلت ثبت‌نام تمام شده --}}
-                        @elseif ($display === 'closed')
-                            <p class="px-4 py-3 text-sm font-semibold leading-7 text-amber-800 bg-amber-100 rounded-xl">مهلت ثبت‌نام این رویداد به پایان رسیده است.</p>
-
-                        {{-- ۱. مهمان --}}
-                        @elseif (auth()->guest())
-                            <a href="{{ route('login') }}"
-                            class="block w-full py-3 text-center text-sm font-bold text-white rounded-xl bg-gradient-to-l from-indigo-600 to-fuchsia-500
-                                    shadow-md shadow-indigo-500/30 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                                برای ثبت‌نام ابتدا وارد شوید
-                            </a>
-
-                        {{-- ۳. کاربر واردشده، ثبت‌نام‌نکرده، رویداد پولی --}}
-                        @elseif ($event->requires_payment)
-                            <a href="#" onclick="alert('درگاه پرداخت به زودی متصل می‌شود.'); return false;"
-                            class="block w-full py-3 text-center text-sm font-bold text-white rounded-xl bg-gradient-to-l from-indigo-600 to-fuchsia-500
-                                    shadow-md shadow-indigo-500/30 hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                                ثبت‌نام و پرداخت
-                            </a>
-
-                        {{-- ۳. کاربر واردشده، ثبت‌نام‌نکرده، رویداد رایگان --}}
-                        @if (auth()->check() && auth()->user()->isBlocked())
-                            <button type="button" disabled
-                                    class="w-full inline-flex items-center justify-center gap-2 py-3 text-sm font-bold text-red-600 bg-red-100 border border-red-200 rounded-xl cursor-not-allowed">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24"><path d="M12 9v2m0 4h.01M12 21a9 9 0 110-18 9 9 0 010 18z"/></svg>
-                                حساب شما مسدود است - امکان ثبت‌نام وجود ندارد
-                            </button>
-                    </div>
+                </div>
                 </div>
             </aside>
         </div>
