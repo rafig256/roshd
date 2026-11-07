@@ -269,7 +269,7 @@
                                         hover:shadow-xl hover:shadow-slate-900/10 hover:-translate-y-1 transition-all">
 
                             {{-- Banner --}}
-                            <a href="{{ route('public.events.show', $event->slug) }}" class="block relative aspect-[3/4] w-full overflow-hidden bg-slate-50 rounded-t-2xl">
+                                <a href="{{ route('public.events.show', $event->slug) }}" class="block relative aspect-[3/4] w-full overflow-hidden bg-slate-50 rounded-t-2xl">
                                 
                                 @if ($event->cover_image_path)
                                     <img src="{{ route('file.event-cover', basename($event->cover_image_path)) }}" 

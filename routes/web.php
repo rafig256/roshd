@@ -22,6 +22,7 @@ use App\Http\Controllers\Public\OrganizationController as PublicOrganizationCont
 use App\Http\Controllers\Public\OrganizationJoinRequestController as PublicOrganizationJoinRequestController;
 use App\Http\Controllers\Public\NewsController as PublicNewsController;
 use App\Http\Controllers\Public\EventController as PublicEventController;
+use App\Http\Controllers\Public\PageController;
 
 // --- کنترلرهای کاربران عادی (User) ---
 use App\Http\Controllers\Auth\RegisterController;
@@ -61,6 +62,10 @@ Route::get('/events/{event:slug}', [PublicEventController::class, 'show'])->name
 Route::get('/storage/logos/{filename}', [FileController::class, 'showLogo'])->name('file.logo');
 Route::get('/storage/news-covers/{filename}', [FileController::class, 'showNewsCover'])->name('file.news-cover');
 Route::get('/storage/event-covers/{filename}', [FileController::class, 'showEventCover'])->name('file.event-cover');
+
+// مسیرهای صفحات عمومی
+Route::get('/about', [PageController::class, 'about'])->name('public.pages.about');
+Route::get('/contact', [PageController::class, 'contact'])->name('public.pages.contact');
 
 // ==========================================
 // ۲. مسیرهای کاربران عادی (فناوران)

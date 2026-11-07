@@ -22,6 +22,9 @@ class SettingController extends Controller
             'site_version' => 'required|string|max:50',
             'contact_email' => 'nullable|email',
             'contact_phone' => 'nullable|string|max:20',
+            'contact_address' => 'nullable|string',
+            'about_us' => 'nullable|string',
+            'contact_us' => 'nullable|string',
         ]);
 
         // آپدیت کردن هر تنظیم در دیتابیس

@@ -15,6 +15,9 @@ class SettingSeeder extends Seeder
             ['key' => 'site_logo', 'value' => '', 'group' => 'general', 'type' => 'image'],
             ['key' => 'contact_email', 'value' => 'info@example.com', 'group' => 'contact', 'type' => 'string'],
             ['key' => 'contact_phone', 'value' => '02100000000', 'group' => 'contact', 'type' => 'string'],
+            ['key' => 'about_us', 'value' => 'متن پیش‌فرض درباره ما...', 'group' => 'pages', 'type' => 'text'],
+            ['key' => 'contact_us', 'value' => 'متن پیش‌فرض تماس با ما...', 'group' => 'pages', 'type' => 'text'],
+            ['key' => 'contact_address', 'value' => 'آدرس مرکز...', 'group' => 'contact', 'type' => 'string'],
         ];
 
         foreach ($settings as $setting) {

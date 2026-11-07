@@ -17,7 +17,7 @@ class HomeController extends Controller
             ->get();
 
         $homeEvents = Event::with(['speakers.user'])
-            ->where('status', EventStatus::Published)
+            // ->where('status', EventStatus::Published)
             ->orderBy('starts_at', 'asc')
             ->take(6)
             ->get();

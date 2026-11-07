@@ -125,7 +125,7 @@
             <div>
                 <label for="description" class="{{ $label }}">توضیحات <span class="text-red-500">*</span></label>
                 <textarea id="description" name="description" rows="6"
-                          class="{{ $input }} leading-7 resize-y @error('description') border-red-400 @else border-slate-300 @enderror">{{ $v('description') }} required<form</textarea>
+                          class="{{ $input }} leading-7 resize-y @error('description') border-red-400 @else border-slate-300 @enderror">{{ $v('description') }} </textarea>
                 @error('description') <p class="mt-1.5 text-xs text-red-600">{{ $message }}</p> @enderror
             </div>
 
